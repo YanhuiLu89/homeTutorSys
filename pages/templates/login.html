@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block style %}
+    <style>
+        input,select{height:30px; width:120px; vertical-align:left;}
+    </style>
+{% endblock %}
+
+{% block head %}
+    <h2>欢迎登录毕业设计管理系统！</h2>
+{% endblock %}
+
+{% block contentbody %}
+    <div style="margin: 15% 40%;">
+            <form action="{% url 'login' %}" method="post" name='login'>{% csrf_token %}
+               <table align="center">
+                    <tr>
+                        <td>名称：</td>
+                        <td><input type="text" id="id_username" name="username" placeholder="用户名" autofocus required  /></td>
+                    </tr>
+                    <tr>
+                        <td>密码：</td>
+                        <td><input type="password" id="id_password" placeholder="密码" name="password" required  /></td>
+                    </tr>
+                    <tr>
+                        <td>身份：</td>
+                        <td>
+                            <select id="usertype"  name="usertype" panelHeight="auto" >
+                                <option value=0>学生</option>
+                                <option value=1>老师</option>
+                                <option value=2>管理员</option>
+                            </select> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <input type="submit" value="登录" >
+                        </td>
+                    </tr>
+               </table>     
+        </form>
+    </div>
+{% endblock %}

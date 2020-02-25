@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block head %}  
+<br/>
+{% endblock %}
+
+{% block topmenucenter %}
+    <div style="padding:20px">
+        <a id =link href="{% url 'home' %}">首页</a>
+        <a id =link href="{% url 'reviewdesign' %}">选题审核</a>
+        <a id =link href="{% url 'mgdesign' %}">选题管理</a>
+    </div>
+{% endblock %}
+
+{% block contentbody %}
+    <div style="margin: 0% 10% 0% 10%">
+        <div style="width:100%; height:300px">
+            <h4>编辑个人信息</h4>
+            <form enctype='multipart/form-data' action="{% url 'editmyinfo' %}" method="post" name='editmyinfo' >{% csrf_token %}
+            <table style="margin:0% 0% 0% 0%;width:100%">
+                <tr align="left">
+                    <td>老师id:{{ teacher.teacher.userid }}</td>
+                    <td>姓名:<input type="text" id="id_name" name="name" value="{{ teacher.teacher_name}}" style="width:200px;height:32px"/></td>
+                </tr>
+                <tr align="left">
+                    <td>专业:<input type="text"  name="major" value="{{ teacher.teacher.major }}" style="width:300px;height:32px"/></td>
+                    <td>职称:<input type="text" name="title" value="{{teacher.teacher_title }}" style="width:200px;height:32px"/>
+                </tr>
+                <tr align="left">
+                    <td>电话:<input type="text" name="phone" value="{{ teacher.teacher_phone }}" style="width:300px;height:32px"/></td>
+                    <td><input type="submit" value="更新" name="updatemyinfo" style="width:120px; height:30px;float:center" ></td>
+                </tr>
+            </table>
+            </form>
+        </div>
+	</div>
+{% endblock %}

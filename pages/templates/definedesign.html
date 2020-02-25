@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block head %}  
+<br/>
+{% endblock %}
+
+{% block topmenucenter %}
+    <div style="padding:20px">
+        <a id =link href="{% url 'home' %}">首页</a>
+        <a id =link href="{% url 'selectdesign' %}">选择课题</a>
+        <a id =selectedlink  href="{% url 'definedesign' %}">自拟课题</a> 
+    </div>
+{% endblock %}
+
+{% block contentbody %}
+<div style="width:100%;margin:5% auto">
+        <form enctype='multipart/form-data' action="{% url 'definedesign' %}" method="post" name='definedesign' >{% csrf_token %}
+            <table align="center" >
+                <tr>
+                    <td style="width:10%">题目</td>
+                    <td style="width:90%"><input type="text" id="id_name" name="subject" placeholder="请输入题目" style="width:100%; height:60px" autofocus required  /></td>
+                </tr>
+                <tr>
+                        <td style="width:10%">导师</td>
+                        <td style="width: 50%;height:60px">
+                                <select name="teacher" panelHeight="auto" style="width: 100%;height:30px;float:left">
+                                {% for teacher in teacher_list.all %}
+                                    <option value='{{teacher.teacher_name}}'>{{teacher.teacher_name}}</option>
+                                {% endfor %}
+                                </select> 
+                        </td>
+                </tr>
+                <tr>
+                    <td>分类</td>
+                    <td style="width: 50%;height:60px">
+                        <select id="XG"  name="type" panelHeight="auto" style="width: 100%;height:30px;float:left">
+                        <option value=XG>信息管理</option>
+                        <option value=JSJ>计算机</option>
+                        <option value=JR>金融</option>
+                        <option value=GC>工程</option>
+                        <option value=JK>航空</option>
+                        <option value=XT>系统</option>
+                        <option value=YJ>研究</option>
+                        <option value=QT>其他</option>
+                        </select> 
+                    </td>
+                </tr>
+                <tr>
+                        <td>简介</td>
+                        <td><textarea id="id_introduce" placeholder="请输入简介" name="introduce"   style="width:100%; height:300px"></textarea></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="确认提交" style="width:120px; height:30px;float:right" ></td>
+                </tr>
+        </table>     
+    </form>
+</div>
+{% endblock %}

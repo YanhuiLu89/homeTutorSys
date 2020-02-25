@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block head %}  
+<br/>
+{% endblock %}
+
+{% block topmenucenter %}
+    <div style="padding:20px">
+        <a id =link href="{% url 'home' %}">首页</a>
+        <a id =link href="{% url 'selectdesign' %}">选择课题</a>
+        <a id =link  href="{% url 'definedesign' %}">自拟课题</a> 
+    </div>
+{% endblock %}
+
+{% block contentbody %}
+    <div style="margin: 0% 10% 0% 10%">
+        <div style="width:100%; height:300px">
+            <h4>编辑个人信息</h4>
+            <form enctype='multipart/form-data' action="{% url 'editmyinfo' %}" method="post" name='editmyinfo' >{% csrf_token %}
+            <table style="margin:0% 0% 0% 0%;width:100%;" vertical-align=left>
+                <tr align="left">
+                    <td >学号:{{ student.student.userid }}</td>
+                    <td>姓名:<input type="text" id="id_name" name="name" value="{{ student.student_name}}" style="width:50%;height:32px"/></td>
+                </tr>
+                <tr align="left">
+                    <td>专业:<input type="text"  name="major" value="{{ student.student_major }}" style="width:50%;height:32px"/></td>
+                    <td>电话:<input type="text" name="phone" value="{{ student.student_phone }}" style="width:50%;height:32px"/></td>
+                </tr>
+                <tr align="left">
+                    <td>年级:<input type="text" name="grade" value="{{ student.student_grade }}" style="width:50%;height:32px"/></td>
+                    <td>班号:<input type="text"  name="class" value="{{ student.student_class }}" style="width:50%;height:32px"/></td>
+                </tr>
+                </table>
+                <table>
+                    <tr align="left">
+                        <td width="90%">地址:<input type="text"  name="address" value="{{ student.student_address }}" style="width:80%;height:32px"/></td>
+                        <td><input type="submit" value="更新" name="updatemyinfo" style="width:120px; height:30px;float:center" ></td>
+                    </tr>  
+                </table>
+            </form>
+        </div>
+	</div>
+{% endblock %}

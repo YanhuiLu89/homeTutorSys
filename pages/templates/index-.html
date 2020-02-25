@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+     <!-- 使用CSS样式来控制div布局 -->
+     <style type="text/css">
+        /*定义全局的div布局*/
+        #content{
+            width: 300px;
+            height: 300px;
+            margin:200px auto;
+        }
+        html,body{text-align:center;background:url("/static/images/sues.jpg");background-size: 100%,100%;}
+        input,select{height:30px; width:200px; vertical-align:left;}
+
+    </style>
+</head>
+<body>
+    <div id=content>
+        <h2>毕业设计选题系统</h2>
+        <div>
+            {% for message in messages %}
+                <div class='alert alert-{{message.tags}}' style="color:coral">{{ message }}</div>
+            {% endfor %}
+        </div>
+        <form action="{% url 'index' %}" method="post" name='index'>{% csrf_token %}
+            <table align="center">
+                <tr>
+                    <td style="font-weight: bold">账号：</td>
+                    <td><input type="text" id="id_userid" name="userid" placeholder="请输入学号或老师id或管理员id" autofocus required  /></td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold">密码：</td>
+                    <td><input type="password" id="id_password" placeholder="请输入密码" name="password" required  /></td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold">身份：</td>
+                    <td>
+                        <select id="usertype"  name="usertype" panelHeight="auto" >
+                            <option value=0>学生</option>
+                            <option value=1>老师</option>
+                            <option value=2>管理员</option>
+                        </select> 
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="submit" value="登录" >
+                    </td>
+                </tr>
+            </table>     
+        </form>
+    </div>
+</body>
+</html>

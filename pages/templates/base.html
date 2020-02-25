@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+     <!-- 使用CSS样式来控制div布局 -->
+     <style type="text/css">
+        /*定义全局的div布局*/
+        div#global{
+            /*设置宽度，设置百分比可以根据浏览器自适应宽度*/
+            width: 100%;
+            /*设置高度，900px是设置是实体高度，不能自适应的*/
+            height: 900px;
+            /*设置背景颜色*/
+            background-color:white; 
+            /* background:url("/static/images/sues.jpg"); */
+            background-size: 100%,100%;
+        }
+        /*定义头部布局，前面的div可以不用写，#号前面默认有个id，凡事定义了id的标签，都可以用#号来表示*/
+        #topmenucenter{
+            width: 100%;
+            height: 48px;
+            font-size:16px;
+            background-color:rgb(4, 138, 228);
+            border:0;
+            font-weight: bold;
+        }
+        #slidbar{
+            width: 20%;
+            height: 100%;
+            font-size:16px;
+            background-color:rgb(177, 207, 228);
+            border:0;
+            font-weight: bold;
+            float:left;
+        }
+        #content_body{
+            width: 80%;
+            height: 852px;
+            float: right;
+            font-size:28px;        
+        }
+        #link{
+            font-size:20px;
+            padding: 6px;
+            text-decoration:none;
+            color:rgb(44, 43, 43);          
+        }
+        #selectedlink{
+        font-size:20px;
+        padding: 6px;
+        text-decoration:none;
+        color:black;     
+    }
+    </style>
+    {% block style %}
+    {% endblock %}
+</head>
+<style>       html,body{text-align:center;margin:5px auto;}
+</style>
+<body>
+    <!-- 在这里控制全局的页面，定义div的id是"global" -->
+    <div id="global">
+        <div id="topmenucenter">
+            {% block topmenucenter %}
+            {% endblock %}
+        </div>
+        <div id="slidbar" >
+            {% block slidbar %}
+            <table style="margin: 50% 10% 50% 50%">
+                    <tr><td><a id =link  href="{% url 'msgcenter' %}">消息</a></td></tr>
+                    <tr><td><a id =link  href="{% url 'my' %}">我的</a></td></tr>
+                    <tr><td><a id =link href="{% url 'logout' %}">退出</a</td></tr>
+            </table>
+            {% endblock %}
+        </div>
+        <div id="content_body">
+            <div>
+                {% for message in messages %}
+                    <div class='alert alert-{{message.tags}}' style="color:coral">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% block contentbody %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

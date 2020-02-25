@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+     <!-- 使用CSS样式来控制div布局 -->
+     <style type="text/css">
+        /*定义全局的div布局*/
+        #content{
+            width: 100%;
+            height: 800px;
+            margin:200px auto;
+        }
+        html,body{text-align:center;background:url("/static/images/bg_pic.jpg");background-repeat:repeat}
+        input,select{height:30px; width:200px; vertical-align:left;}
+
+    </style>
+</head>
+<body>
+    <div id=content>
+        <h2>爱学习家教中介系统</h2>
+        <div>
+                {% for message in messages %}
+                    <div class='alert alert-{{message.tags}}' style="color:coral">{{ message }}</div>
+                {% endfor %}
+        </div>
+        <form action="{% url 'index' %}" method="post" name='index'>{% csrf_token %}
+            <table align="center">
+                <tr >
+                    <td></td>
+                    <td style="background-color: dodgerblue;size:10;color:white;border:none">免费注册</td>
+                </tr>
+                <tr>
+                    <td>账户：</td>
+                    <td><input type="text" id="id_username" name="username" placeholder="请输入用户名" autofocus required  /></td>
+                </tr>
+                <tr>
+                    <td>密码：</td>
+                    <td><input type="password" id="id_password" placeholder="请输入密码" name="password" required  /></td>
+                </tr>
+                <tr>
+                    <td>邮箱：</td>
+                    <td><input type="text" id="id_mail" placeholder="请输入邮箱" name="mail" required /></td>
+                </tr>
+                <tr>
+                    <td>身份：</td>
+                    <td>
+                        <select id="usertype"  name="usertype" panelHeight="auto" >
+                            <option value=0>学生</option>
+                            <option value=1>老师</option>
+                        </select> 
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="submit" value="注册">
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><a id =linkwithdecoration  style="color:white;float:right" href="{% url 'login' %}">已有账号登录</a></td>
+                </tr>
+            </table>     
+        </form>
+    </div>
+</body>
+</html>

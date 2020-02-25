@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block head %}  
+<br/>
+{% endblock %}
+
+{% block topmenucenter %}
+    <div style="padding:20px">
+        <a id =link href="{% url 'home' %}">首页</a>
+        <a id =link href="{% url 'selectdesign' %}">选择课题</a>
+        <a id =link  href="{% url 'definedesign' %}">自拟课题</a> 
+    </div>
+{% endblock %}
+
+{% block contentbody %}
+    <div style="margin: 0% 10% 0% 10%">
+        <div style="width:100%; height:300px">
+            <h4>个人信息</h4>
+            <table style="margin:0% 0% 0% 0%;width:100%">
+                <tr align="left">
+                    <td width="50%">学号:{{ student.student.userid }}</td>
+                    <td width="50%">姓名:{{ student.student_name}}</td>
+                </tr>
+                <tr align="left">
+                    <td width="50%">专业:{{ student.student_major }}</td>
+                    <td width="50%">班级:{{ student.student_grade }}{{ student.student_class }}班</td>
+                </tr>
+            </table>
+            <p align="left">
+                地址:{{ student.student_address }}
+                <br/>
+                电话:{{ student.student_phone }}
+                <br/>
+                <a  href="{% url 'editmyinfo' %}">编辑</a>
+            </p>
+        </div>
+        <div  style="width:100%; height:500px">
+            <h4>毕业进程</h4>
+                {% for work in work_list.all %}
+                <p align="left">
+                    课题:<a  href="{% url 'designdetail' work.subject %}">{{work.subject}}</a>
+                    <br/>
+                    状态:{{ work.state }}&nbsp;&nbsp;{{ work.nextaction }}
+                    <br/>
+                    更新时间:{{ work.updatetime }}
+                    <br/>
+                </p>
+                {% endfor %}
+        </div>
+	</div>
+{% endblock %}

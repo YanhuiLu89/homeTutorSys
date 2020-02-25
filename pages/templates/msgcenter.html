@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block head %}  
+<br/>
+{% endblock %}
+
+{% block style %}
+<style>
+    #pcontent{
+        font-size:28px;
+        color:black;
+    }
+</style>
+{% endblock %}
+
+{% block topmenucenter %}
+    <div style="padding:20px">
+        <a id =link href="{% url 'home' %}">首页</a>
+        <a id =link href="{% url 'selectdesign' %}">选择课题</a>
+        <a id =link  href="{% url 'definedesign' %}">自拟课题</a> 
+    </div>
+{% endblock %}
+
+{% block contentbody %}
+<div style="margin: 5% 20%" >
+    <h4>消息中心</h4>
+    {% for message in message_list.all %}
+    <p align="left">
+        <tr>
+            <td>{{ message.updatetime}}&nbsp&nbsp管理员回复了你的留言</td>
+        </tr>
+    </p>
+    <p align="left"><lable>留言:</label> {{ message.text}}</p>
+    <p align="left"><lable>回复内容:</label> {{ message.reply}}</p>
+    {% endfor %}
+</div>
+{% endblock %}
