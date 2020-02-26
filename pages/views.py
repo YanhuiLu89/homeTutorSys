@@ -24,13 +24,10 @@ def index(request):#入口页
             return render(request,'index.html')
         user = Users(usertype=temp_usertype,name=temp_name, password=temp_psw, email=temp_mail)
         user.save()
-        if 2==temp_usertype:#如果是养老机构会员，要创建对应的养老机构对象
-            place=Places(user=user,name=user.name,publishtime=timezone.now(),)
-            place.save()
         return render(request,'login.html')
     return render(request,'index.html')
 
-def login(request):#登陆
+def login(request):#入口页
     if request.method == 'POST':
         name = request.POST['username']
         password =  request.POST['password']
@@ -38,40 +35,42 @@ def login(request):#登陆
         # 查询用户是否在数据库中
         print("%s,%s,%d"%(name,password,usertype))
         if Users.objects.filter(name=name).exists():
-            print("111111111111111111111")
             user=Users.objects.get(name=name)
             print("%s,%s,%d" % (user.name,user.password,user.usertype))
             print(user.password+",%d" % user.usertype)
-            if user.password==password and int(user.usertype)==usertype:
-                print("2222222222222222222")
-                place_list = Places.objects.all().order_by('-publishtime')
-                context = {'place_list': place_list}
+            if user.password==password and user.usertype==usertype:
+                print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+                #记录cooki
                 request.session['is_login'] = 'true'
-                request.session['usermail'] = user.email
-                if user.usertype==1:
-                    response=render(request, 'homepage_a.html',context)#跳到管理员首页界面
+                request.session["username"] = user.name
+                notice_list = Notices.objects.all()
+                context = {'notice_list': notice_list}
+                if user.usertype==0:
+                    print("000000000000000000000000000000000000")
+                    response=render(request, 'homepage.html',context)
+                elif user.usertype==1:
+                    print("11111111111111111111111111111111")
+                    response=render(request, 'homepage_t.html',context)
                 elif user.usertype==2:
-                    response=render(request, 'homepage_c.html',context)#跳到养老机构首页界面
-                else:
-                    response=render(request, 'homepage.html',context)#跳到会员首页界面
-                #set cookie
-                response.set_cookie('usermail', user.email)
+                    print("222222222222222222222222222222222222")
+                    response=render(request, 'homepage_a.html',context)
+                response.set_cookie("username", name)
                 return response
             else:
-                messages.add_message(request,messages.ERROR,'用户密码或身份类型错误')
+                print("3333333333333333333333333333333333333333333")
+                messages.add_message(request,messages.ERROR,'密码或身份类型错误')
                 return render(request, 'login.html')
         else:
-            print("333333333333333333333")
             messages.add_message(request,messages.ERROR,'用户不存在')
             return render(request, 'login.html')
     return render(request, 'login.html')
     
 def home(request):#主页
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    user = Users.objects.get(userid = cook)
+    user = Users.objects.get(name = cook)
     notice_list = Notices.objects.all()
     context = {'notice_list': notice_list}
     if user.usertype == 0:
@@ -85,12 +84,12 @@ def logout(request):#退出登录
     request.session.delete()
     request.session.flush() 
     response=render(request, 'index.html')
-    response.delete_cookie("userid")
+    response.delete_cookie("username")
     return response
 
 def designdetail(request,subject):
     print("sad sad sad sad sad")
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html',context)
@@ -102,7 +101,7 @@ def designdetail(request,subject):
     else:
         design=Designs.objects.get(subject=temp_subject)
         context = {'design': design}
-    user=Users.objects.get(userid=cook)
+    user=Users.objects.get(name=cook)
     if user.usertype==0:
         return render(request, 'designdetail.html',context)
     elif user.usertype==1:
@@ -111,11 +110,11 @@ def designdetail(request,subject):
         return render(request, 'designdetail_a.html',context)
 
 def msgcenter(request):#消息中心
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    user = Users.objects.get(userid = cook)
+    user = Users.objects.get(name = cook)
     if user.usertype==0:
         student=StudentInfos.objects.get(student=user)
         messages=Messages.objects.filter(Q(fromuser=student)&~Q(reply=''))
@@ -129,11 +128,11 @@ def msgcenter(request):#消息中心
         return render(request, 'msgcenter_a.html',content)
 
 def editmyinfo(request):#我的
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    user = Users.objects.get(userid = cook)
+    user = Users.objects.get(name = cook)
     if request.method == 'GET':#连接到信息编辑页面
         if user.usertype==0:
             student=StudentInfos.objects.get(student=user)
@@ -185,20 +184,20 @@ def editmyinfo(request):#我的
         return HttpResponseRedirect(reverse('pages:my'))
 
 def my(request):#我的
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    user = Users.objects.get(userid = cook)
+    user = Users.objects.get(name = cook)
     if user.usertype==0:
         student=StudentInfos.objects.get(student=user)
-        mywork=Workflow.objects.filter(Q(fromuser=student)|Q(currentuser=user.userid))
+        mywork=Workflow.objects.filter(Q(fromuser=student)|Q(currentuser=user.name))
         context = {'student': student,'work_list':mywork}
         return render(request, 'my.html',context)
     elif user.usertype==1:
         teacher=TeacherInfos.objects.get(teacher=user)
-        mywork1=Workflow.objects.filter(Q(currentuser=user.userid)&Q(nextaction=u'待老师审核'))
-        mywork2=Workflow.objects.filter(Q(currentuser=user.userid)&Q(state=u'老师审核通过'))
+        mywork1=Workflow.objects.filter(Q(currentuser=user.name)&Q(nextaction=u'待老师审核'))
+        mywork2=Workflow.objects.filter(Q(currentuser=user.name)&Q(state=u'老师审核通过'))
         context = {'teacher': teacher,'list1count':len(mywork1),'work_list1':mywork1,'list2count':len(mywork2),'work_list2':mywork2}
         return render(request, 'my_t.html',context)
     elif user.usertype==2:
@@ -210,11 +209,11 @@ def my(request):#我的
 
 ###############################老师相关view##################################################
 def mgdesign(request):#
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    user = Users.objects.get(userid = cook)
+    user = Users.objects.get(name = cook)
     if user.usertype==1:#老师只管理自己的课题
         teacher=TeacherInfos.objects.get(teacher=user)
         design_list=Designs.objects.filter(teacher=teacher)
@@ -228,18 +227,18 @@ def mgdesign(request):#
         return render(request, 'mgdesign_a.html',context)
 
 def toadddesign(request):#跳转到添加课题页面
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
     return render(request, 'adddesign.html')
     
 def adddesign(request):#添加课题
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    user = Users.objects.get(userid = cook)
+    user = Users.objects.get(name = cook)
     if  request.method == 'POST':
         temp_subject = request.POST['subject']
         temp_type = request.POST['type']
@@ -261,14 +260,14 @@ def adddesign(request):#添加课题
     return render(request, 'adddesign.html')
 
 def reviewdesign(request):#
-    cook = request.COOKIES.get('userid')#审核课题
+    cook = request.COOKIES.get("username")#审核课题
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    user = Users.objects.get(userid = cook)
+    user = Users.objects.get(name = cook)
     if user.usertype==1:#老师审核选题和自拟题
-        works1=Workflow.objects.filter(Q(currentuser=user.userid)&Q(nextaction=u'待老师审核')&Q(isselfdesign=False))
-        works2=Workflow.objects.filter(Q(currentuser=user.userid)&Q(nextaction=u'待老师审核')&Q(isselfdesign=True))
+        works1=Workflow.objects.filter(Q(currentuser=user.name)&Q(nextaction=u'待老师审核')&Q(isselfdesign=False))
+        works2=Workflow.objects.filter(Q(currentuser=user.name)&Q(nextaction=u'待老师审核')&Q(isselfdesign=True))
         context = {'work_list1':works1,'work_list2':works2}
         return render(request, 'reviewdesign.html',context)
     elif user.usertype==2:#老师审核自拟题目
@@ -277,11 +276,11 @@ def reviewdesign(request):#
         return render(request, 'reviewdesign_a.html',context)
 
 def reviewclick(request,workflow_id):
-    cook = request.COOKIES.get('userid')#审核课题
+    cook = request.COOKIES.get("username")#审核课题
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    user = Users.objects.get(userid = cook)
+    user = Users.objects.get(name = cook)
     temp_id=workflow_id
     work=Workflow.objects.get(id=temp_id)
     if request.method == 'POST':
@@ -314,7 +313,7 @@ def reviewclick(request,workflow_id):
     return HttpResponseRedirect(reverse('pages:reviewdesign'))
     
 def reviewselfdesign(request,selfdesign_id):
-    cook = request.COOKIES.get('userid')#审核课题
+    cook = request.COOKIES.get("username")#审核课题
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
@@ -330,7 +329,7 @@ def reviewselfdesign(request,selfdesign_id):
     return HttpResponseRedirect(reverse('pages:reviewdesign'))
 
 def toeditdesign(request,design_idno):#编辑课题
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
@@ -340,7 +339,7 @@ def toeditdesign(request,design_idno):#编辑课题
     return render(request, 'editdesign.html', context)
 
 def editdesign(request,design_idno):#点击编辑链接跳转到编辑页面
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
@@ -363,7 +362,7 @@ def editdesign(request,design_idno):#点击编辑链接跳转到编辑页面
     return render(request, 'editdesign.html', context)
 
 def deldesign(request,design_idno):#删除课题
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
@@ -375,7 +374,7 @@ def deldesign(request,design_idno):#删除课题
 
 ###############################管理员相关view##################################################
 def mgstudent(request):#
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
@@ -384,20 +383,20 @@ def mgstudent(request):#
     return render(request, 'mgstudent.html',context)
 
 def addstudent(request):#
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
     if request.method == 'POST':
-        student_id = request.POST['userid']
+        student_id = request.POST["username"]
         student_psw = request.POST['password']
         student_name= request.POST['name']
 
-        if Users.objects.filter(userid=student_id,usertype=0).exists():
+        if Users.objects.filter(name=student_id,usertype=0).exists():
             messages.add_message(request,messages.ERROR,'该学生已经存在')
             return render(request, 'mgstudent.html')
         else:
-            user=Users(usertype=0,userid=student_id,password=student_psw)
+            user=Users(usertype=0,name=student_id,password=student_psw)
             user.save()
             student=StudentInfos(student=user,student_name=student_name)
             student.save()
@@ -405,17 +404,17 @@ def addstudent(request):#
     return render(request, 'mgstudent.html')
 
 def delstudent(request,user_id):#
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')#如果没有登录返回到入口页面
     tempid = user_id
-    Users.objects.filter(userid=tempid).delete()
+    Users.objects.filter(name=tempid).delete()
     return HttpResponseRedirect(reverse('pages:mgstudent'))#重定向到老师管理页面
 
 #管理老师相关接口
 def mgteacher(request):#
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
@@ -424,20 +423,20 @@ def mgteacher(request):#
     return render(request, 'mgteacher.html',context)
 
 def addteacher(request):#
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
     if request.method == 'POST':
-        teacher_id = request.POST['userid']
+        teacher_id = request.POST["username"]
         teacher_psw = request.POST['password']
         teacher_name= request.POST['name']
 
-        if Users.objects.filter(userid=teacher_id,usertype=1).exists():
+        if Users.objects.filter(name=teacher_id,usertype=1).exists():
             messages.add_message(request,messages.ERROR,'该老师已经存在')
             return render(request, 'mgteacher.html')
         else:
-            user=Users(usertype=1,userid=teacher_id,password=teacher_psw)
+            user=Users(usertype=1,name=teacher_id,password=teacher_psw)
             user.save()
             teacher=TeacherInfos(teacher=user,teacher_name=teacher_name)
             teacher.save()
@@ -445,16 +444,16 @@ def addteacher(request):#
     return render(request, 'mgteacher.html')
 
 def delteacher(request,user_id):#
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
     tempid = user_id
-    Users.objects.filter(userid=tempid).delete()
+    Users.objects.filter(name=tempid).delete()
     return HttpResponseRedirect(reverse('pages:mgteacher'))#重定向到老师管理页面
 
 def mgmessage(request):#留言管理
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
@@ -464,7 +463,7 @@ def mgmessage(request):#留言管理
     return render(request, 'mgmessage.html',context)
 
 def processmsg(request,message_id):#删除或回复留言
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
@@ -480,7 +479,7 @@ def processmsg(request,message_id):#删除或回复留言
     return HttpResponseRedirect(reverse('pages:mgmessage'))
 
 def replymsg(request,message_id):#删除或回复留言
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
@@ -494,13 +493,13 @@ def replymsg(request,message_id):#删除或回复留言
     return HttpResponseRedirect(reverse('pages:mgmessage'))
 
 def leavmessage(request):#留言
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
     if request.method == 'POST':
         temp_message=request.POST.get('message')
-        user = Users.objects.get(userid = cook)
+        user = Users.objects.get(name = cook)
         student=StudentInfos.objects.get(student=user)
         message=Messages(fromuser=student,text=temp_message,reply='',updatetime=timezone.now())
         message.save()
@@ -508,7 +507,7 @@ def leavmessage(request):#留言
     return HttpResponseRedirect(reverse('pages:home'))
 
 def addnotice(request):#
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
@@ -520,7 +519,7 @@ def addnotice(request):#
 
 ###############################学生相关view##################################################
 def selectdesign(request):#选题页面
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
@@ -530,11 +529,11 @@ def selectdesign(request):#选题页面
     return render(request, 'selectdesign.html',context)
 
 def selecteddesign(request,design_idno):#确定选择某一个课题
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    user = Users.objects.get(userid = cook)
+    user = Users.objects.get(name = cook)
     student=StudentInfos.objects.get(student=user)
     if Workflow.objects.filter(Q(fromuser=student)&(~Q(state=u'打回'))).exists():
         messages.add_message(request,messages.ERROR,'你已经选择了课题，不能多次选择')
@@ -544,20 +543,20 @@ def selecteddesign(request,design_idno):#确定选择某一个课题
     tmep_idno=design_idno
     design =Designs.objects.get(idno=tmep_idno)
     design_list=Designs.objects.all()
-    teacher=Users.objects.get(userid=design.teacher.teacher.userid)
+    teacher=Users.objects.get(name=design.teacher.teacher.name)
     #建立任务流
-    workflow=Workflow(fromuser=student,currentuser=teacher.userid,subject=design.subject,state=u'已提交',nextaction=u'待老师审核',isselfdesign=False,updatetime=timezone.now())
+    workflow=Workflow(fromuser=student,currentuser=teacher.name,subject=design.subject,state=u'已提交',nextaction=u'待老师审核',isselfdesign=False,updatetime=timezone.now())
     workflow.save()
     messages.add_message(request,messages.INFO,'你已经选择《'+design.subject+'》课题，可在 我的->毕业进程 中关注最新进展')
     context = {'design_list': design_list}
     return render(request, 'selectdesign.html',context)
 
 def searchdesign(request):
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    user = Users.objects.get(userid = cook)
+    user = Users.objects.get(name = cook)
     filter_count=0
     design_list=Designs.objects.all()
 
@@ -597,11 +596,11 @@ def searchdesign(request):
         return render(request, 'selectdesign.html',context)
 
 def definedesign(request):
-    cook = request.COOKIES.get('userid')
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    user = Users.objects.get(userid = cook)
+    user = Users.objects.get(name = cook)
     student=StudentInfos.objects.get(student=user)
     if  request.method == 'POST':
         if Workflow.objects.filter(Q(fromuser=student)&(~Q(state=u'打回'))).exists():
@@ -622,7 +621,7 @@ def definedesign(request):
             desig.save()
             
             #建立任务流
-            workflow=Workflow(fromuser=student,currentuser=teacher.teacher.userid,subject=temp_subject,state=u'已提交',nextaction='待老师审核',isselfdesign=True,updatetime=timezone.now())
+            workflow=Workflow(fromuser=student,currentuser=teacher.teacher.name,subject=temp_subject,state=u'已提交',nextaction='待老师审核',isselfdesign=True,updatetime=timezone.now())
             workflow.save()
             messages.add_message(request,messages.INFO,'你已经自拟《'+temp_subject+'》课题，可在 我的->毕业进程 中关注最新进展')
             return render(request, 'definedesign.html')

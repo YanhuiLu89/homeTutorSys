@@ -27,16 +27,16 @@
             <form action="{% url 'mgstudent' %}" method="post" name='mgstudent'>{% csrf_token %}
                 <table align="center">
                     <tr align="left">
-                        <td width=15%>学号</td>
-                        <td width=15%>姓名</td>
-                        <td width=20%>班级</td>
-                        <td width=20%>专业</td>
+                        <td width=10%>姓名</td>
+                        <td width=10%>年级</td>
                         <td width=20%>电话</td>
+                        <td width=30%>地址</td>
+                        <td width=30%>需求课程</td>
                         <td></td>
                     </tr>
                     {% for student in student_list.all %}
                         <tr align="left">
-                            <td>{{ student.student.userid }}</td>
+                            <td>{{ student.student.name }}</td>
                             <td>{{ student.student_name }}</td>
                             <td>{{ student.student_calss }}</td>
                             <td>{{ student.student_major }}</td>

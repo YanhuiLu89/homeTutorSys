@@ -1,17 +1,25 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+     <!-- 使用CSS样式来控制div布局 -->
+     <style type="text/css">
+        /*定义全局的div布局*/
+        #content{
+            width: 100%;
+            height: 800px;
+            margin:200px auto;
+        }
+        html,body{text-align:center;background:url("/static/images/bg_pic.jpg");background-repeat:repeat}
+        input,select{height:30px; width:200px; vertical-align:left;}
 
-{% block style %}
-    <style>
-        input,select{height:30px; width:120px; vertical-align:left;}
     </style>
-{% endblock %}
-
-{% block head %}
-    <h2>欢迎登录毕业设计管理系统！</h2>
-{% endblock %}
-
-{% block contentbody %}
+</head>
+<body>
     <div style="margin: 15% 40%;">
+            <h2>爱学习家教中介系统</h2>
+            <h2>欢迎登陆</h2>
             <form action="{% url 'login' %}" method="post" name='login'>{% csrf_token %}
                <table align="center">
                     <tr>
@@ -41,4 +49,5 @@
                </table>     
         </form>
     </div>
-{% endblock %}
+</body>
+</html>

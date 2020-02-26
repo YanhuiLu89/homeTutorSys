@@ -12,55 +12,47 @@ class Users(models.Model):
 
 class StudentInfos(models.Model):#学生信息，与user一对一关系
     student = models.OneToOneField(Users, on_delete=models.CASCADE)
-    student_name = models.CharField(max_length=40,default="")
-    student_phone = models.CharField(max_length=40)
-    student_grade = models.CharField(max_length=40)
-    student_address = models.CharField(max_length=200)
-    student_class = models.CharField(max_length=40)
-    student_major = models.CharField(max_length=100)
+    grade = models.CharField(max_length=40)
 
 class TeacherInfos(models.Model):#老师信息，与user一对一关系
     teacher = models.OneToOneField(Users, on_delete=models.CASCADE)
-    teacher_name = models.CharField(max_length=40,default="")
-    teacher_phone = models.CharField(max_length=40)
-    teacher_title = models.CharField(max_length=200)
-    teacher_major = models.CharField(max_length=100)
+    title = models.CharField(max_length=200，default="")
+    mark = models.IntegerField(default=0 )#打分0-5
 
-class AdminInfos(models.Model):#管理员信息，与user一对一关系
-    admin = models.OneToOneField(Users, on_delete=models.CASCADE)
-    admin_name = models.CharField(max_length=40,default="")
-    admin_phone = models.CharField(max_length=40)
-
-class Designs(models.Model):#毕业设计课题
+class TeacherCourse(models.Model):#老师在开售的课程
     teacher = models.ForeignKey(TeacherInfos,on_delete=models.CASCADE)
-    idno=models.CharField(max_length=10,default="XG101")
-    type=models.CharField(max_length=100,default="XG")
-    subject = models.CharField(max_length=200,default="")
-    introduce = models.CharField(max_length=500)
+    name=models.CharField(max_length=50)
+    grade = models.CharField(max_length=40,default=u"高三")
+    subject = models.CharField(max_length=200,default=u"英语")
+    introduce = models.CharField(max_length=200)#c课程简介
+    time = models.DateTimeField('2020-02-26 19:00')#开课时间
+    length = models.IntegerField(default=30)#授课时长单位分钟
 
-class SelfDefineDesigns(models.Model):#自拟题目
+class StudentCourses(models.Model):#学生发布的所需课程
     student = models.ForeignKey(StudentInfos, on_delete=models.CASCADE)
-    teacher = models.ForeignKey(TeacherInfos,on_delete=models.SET(None))
-    type=models.CharField(max_length=100,default="XG")
-    subject = models.CharField(max_length=200,default="")
+    name=models.CharField(max_length=50)
+    grade = models.CharField(max_length=40,default=u"高三")
+    subject = models.CharField(max_length=200,default=u"英语")
     introduce = models.CharField(max_length=500)
-    state = models.IntegerField(default=3)#0-提交，1-待老师审批，2-待管理员审批，3审批通过,4打回
 
-class Notices(models.Model):
+class Notices(models.Model):#新闻公告
     text = models.CharField(max_length=500)
-    time = models.DateTimeField('date published')
+    time = models.DateTimeField(auto_now=Ture)
 
-class Messages(models.Model):
+class Messages(models.Model):#留言
     fromuser = models.ForeignKey(StudentInfos, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(TeacherInfos)
     text = models.CharField(max_length=500)
     reply = models.CharField(max_length=500)
-    updatetime = models.DateTimeField('date published')
+    updatetime = models.DateTimeField(auto_now=Ture)
 
-class Workflow(models.Model):#工作流，选课审批
-    fromuser = models.ForeignKey(StudentInfos,on_delete=models.CASCADE)#任务发起者
-    currentuser = models.IntegerField(default=0)#当前任务处理者userid
-    subject=models.CharField(max_length=200, default='')#对应的课题题目
-    state = models.CharField(max_length=100)#任务状态
-    nextaction=models.CharField(max_length=100)#下一步动作
-    isselfdesign=models.BooleanField(default=False)#标记是不是自拟题目
-    updatetime = models.DateTimeField('date published')#
+class BookCourse(models.Model):#预约课程
+    fromuser = models.ForeignKey(StudentInfos, on_delete=models.CASCADE)
+    course = models.ForeignKey(TeacherCourse)
+    coursetime = models.timeField('2020-02-26 19:00')#开课时间
+    updatetime = models.TimeField(auto_now=Ture)
+
+classk Courseflow(models.Model):#课程审批流程
+    course = models.ForeignKey(TeacherCourse)
+    state = models.IntegerField(default=0)#0-提交 1-通过 2-打回
+    updatetime = models.DateTimeField(auto_now=Ture)#
