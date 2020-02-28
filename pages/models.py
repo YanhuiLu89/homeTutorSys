@@ -3,31 +3,31 @@ from django.db import models
 # Create your models here.
 class Users(models.Model):
     usertype = models.IntegerField(default=0)#0-学生，1-老师，2-管理员
-    name = models.CharField(max_length=50)
-    gender = models.CharField(max_length=10,default='male')
+    name = models.CharField(max_length=30)#账户名
+    fullname = models.CharField(max_length=30,default='')#姓名
+    gender = models.CharField(max_length=10,default='')
     password = models.CharField(max_length=50)
-    email = models.EmailField(default='1@2.com')
+    email = models.EmailField(default='')
     phone=models.CharField(max_length=50,default='')
     address=models.CharField(max_length=200,default='')
 
 class StudentInfos(models.Model):#学生信息，与user一对一关系
     student = models.OneToOneField(Users, on_delete=models.CASCADE)
-    grade = models.CharField(max_length=40)
+    grade = models.CharField(max_length=40,default='')
 
 class TeacherInfos(models.Model):#老师信息，与user一对一关系
     teacher = models.OneToOneField(Users, on_delete=models.CASCADE)
     title = models.CharField(max_length=200,default="")
     mark = models.IntegerField(default=0 )#打分0-5
+    introduce= models.IntegerField(max_length=300,default=0 )#自我介绍
 
-class TeacherCourse(models.Model):#老师在开售的课程
-    teacher = models.OneToOneField(TeacherInfos,on_delete=models.CASCADE)
-    student = models.ForeignKey(StudentInfos,on_delete=models.SET(None))#有哪些学生预约了这个课程
-    name=models.CharField(max_length=50)
-    grade = models.CharField(max_length=40,default=u"高三")
-    subject = models.CharField(max_length=200,default=u"英语")
+class TeacherCourse(models.Model):#开售的课程
+    name=models.CharField(max_length=50)#课程名称
+    teacher = models.ManyToManyField(TeacherInfos)#有哪些老师可以上这个课
+    student = models.ManyToManyField(StudentInfos)#有哪些学生预约了这个课程
+    grade = models.CharField(max_length=40,default=u"高三")#年级
+    subject = models.CharField(max_length=200,default=u"英语")#科目
     introduce = models.CharField(max_length=200)#c课程简介
-    time = models.DateTimeField('2020-02-26 19:00')#开课时间
-    length = models.IntegerField(default=30)#授课时长单位分钟
 
 class StudentCourses(models.Model):#学生发布的所需课程
     student = models.ForeignKey(StudentInfos, on_delete=models.CASCADE)

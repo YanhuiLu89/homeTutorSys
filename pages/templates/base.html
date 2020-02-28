@@ -26,7 +26,7 @@
             font-weight: bold;
         }
         #slidbar{
-            width: 20%;
+            width: 10%;
             height: 100%;
             font-size:16px;
             background-color:rgb(177, 207, 228);
@@ -35,7 +35,7 @@
             float:right;
         }
         #content_body{
-            width: 80%;
+            width: 90%;
             height: 852px;
             float: right;
             font-size:28px;        
@@ -50,7 +50,7 @@
         font-size:20px;
         padding: 6px;
         text-decoration:none;
-        color:black;     
+        color:white;     
     }
     </style>
     {% block style %}
@@ -67,7 +67,7 @@
         </div>
         <div id="slidbar" >
             {% block slidbar %}
-            <table style="margin: 50% 10% 50% 50%">
+            <table style="margin: 5% 5% 5% 5%">
                     <tr><td><a id =link  href="{% url 'msgcenter' %}">消息</a></td></tr>
                     <tr><td><a id =link  href="{% url 'my' %}">我的</a></td></tr>
                     <tr><td><a id =link href="{% url 'logout' %}">退出</a</td></tr>

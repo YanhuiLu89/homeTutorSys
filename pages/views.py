@@ -24,6 +24,12 @@ def index(request):#入口页
             return render(request,'index.html')
         user = Users(usertype=temp_usertype,name=temp_name, password=temp_psw, email=temp_mail)
         user.save()
+        if user.usertype==0:
+            studentinfo=StudentInfos(student=user)
+            studentinfo.save()
+        elif user.usertype==1:
+            teacherinfo=TeacherInfos(teacher=user)
+            teacherinfo.save()
         return render(request,'login.html')
     return render(request,'index.html')
 
@@ -407,8 +413,8 @@ def mgstudent(request):#
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    student_list = StudentInfos.objects.all()
-    context = {'student_list': student_list}
+    studentinfo_list = StudentInfos.objects.all()
+    context = {'studentinfo_list': studentinfo_list}
     return render(request, 'mgstudent.html',context)
 
 def addstudent(request):#
