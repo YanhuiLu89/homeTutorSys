@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.db.models import Q 
 from django.utils import timezone
 
-from .models import Users,TeacherInfos,StudentInfos,AdminInfos,Designs,Notices,Workflow,SelfDefineDesigns,Messages
+from .models import Users,TeacherInfos,StudentInfos,Notices,Messages,TeacherCourse,StudentCourses,Courseflow
 # Create your views here.
 ###############################公共view##################################################
 def index(request):#入口页
@@ -208,23 +208,52 @@ def my(request):#我的
         return render(request, 'my_a.html',context)
 
 ###############################老师相关view##################################################
-def mgdesign(request):#
+def mgcourse(request):#
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
     user = Users.objects.get(name = cook)
-    if user.usertype==1:#老师只管理自己的课题
+    if user.usertype==1:#老师只管理自己的课程
         teacher=TeacherInfos.objects.get(teacher=user)
         design_list=Designs.objects.filter(teacher=teacher)
         context = {'design_list': design_list}
-        return render(request, 'mgdesign.html',context)
-    elif user.usertype==2:#管理员管理所有的课题
+        return render(request, 'mgcourse.html',context)
+    elif user.usertype==2:#管理员管理所有的课程
         teacher_list=TeacherInfos.objects.all()
         design_list=Designs.objects.all()
         context = {'design_list': design_list,'teacher_list':teacher_list}
         print('好困好困:',len(teacher_list))
-        return render(request, 'mgdesign_a.html',context)
+        return render(request, 'mgcourse_a.html',context)
+
+def mgcost(request):#
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    user = Users.objects.get(name = cook)
+    if user.usertype==1:#老师只管理自己的课程
+        teacher=TeacherInfos.objects.get(teacher=user)
+        design_list=Designs.objects.filter(teacher=teacher)
+        context = {'design_list': design_list}
+        return render(request, 'mgcost.html',context)
+    elif user.usertype==2:#管理员管理所有的课程
+        teacher_list=TeacherInfos.objects.all()
+        design_list=Designs.objects.all()
+        context = {'design_list': design_list,'teacher_list':teacher_list}
+        print('好困好困:',len(teacher_list))
+        return render(request, 'mgcost_a.html',context)
+
+def mgrecruit(request):#
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    user = Users.objects.get(name = cook)
+    recruit_list=Recruit.objects.all()
+    context = {'recruit_list': recruit_list}
+    return render(request, 'mgrecruit.html',context)
+
 
 def toadddesign(request):#跳转到添加课题页面
     cook = request.COOKIES.get("username")

@@ -32,7 +32,9 @@ urlpatterns = [
 
     path('reviewdesign/', views.reviewdesign, name='reviewdesign'),
     path('reviewclick/<workflow_id>', views.reviewclick, name='reviewclick'),
-    path('mgdesign/', views.mgdesign, name='mgdesign'),
+    path('mgcourse/', views.mgcourse, name='mgcourse'),
+    path('mgcost/', views.mgcost, name='mgcost'),
+    path('mgrecruit/', views.mgrecruit, name='mgrecruit'),
     path('toadddesign/', views.toadddesign, name='toadddesign'),
     path('adddesign/', views.adddesign, name='adddesign'),
     path('deldesign/<design_idno>', views.deldesign, name='deldesign'),

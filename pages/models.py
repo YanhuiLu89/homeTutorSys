@@ -16,11 +16,12 @@ class StudentInfos(models.Model):#学生信息，与user一对一关系
 
 class TeacherInfos(models.Model):#老师信息，与user一对一关系
     teacher = models.OneToOneField(Users, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200，default="")
+    title = models.CharField(max_length=200,default="")
     mark = models.IntegerField(default=0 )#打分0-5
 
 class TeacherCourse(models.Model):#老师在开售的课程
-    teacher = models.ForeignKey(TeacherInfos,on_delete=models.CASCADE)
+    teacher = models.OneToOneField(TeacherInfos,on_delete=models.CASCADE)
+    student = models.ForeignKey(StudentInfos,on_delete=models.SET(None))#有哪些学生预约了这个课程
     name=models.CharField(max_length=50)
     grade = models.CharField(max_length=40,default=u"高三")
     subject = models.CharField(max_length=200,default=u"英语")
@@ -37,22 +38,25 @@ class StudentCourses(models.Model):#学生发布的所需课程
 
 class Notices(models.Model):#新闻公告
     text = models.CharField(max_length=500)
-    time = models.DateTimeField(auto_now=Ture)
+    time = models.DateTimeField(auto_now=True)
 
 class Messages(models.Model):#留言
     fromuser = models.ForeignKey(StudentInfos, on_delete=models.CASCADE)
-    teacher = models.ForeignKey(TeacherInfos)
+    teacher = models.ForeignKey(TeacherInfos,default=(None),on_delete=models.CASCADE)
     text = models.CharField(max_length=500)
     reply = models.CharField(max_length=500)
-    updatetime = models.DateTimeField(auto_now=Ture)
+    updatetime = models.DateTimeField(auto_now=True)
 
-class BookCourse(models.Model):#预约课程
-    fromuser = models.ForeignKey(StudentInfos, on_delete=models.CASCADE)
-    course = models.ForeignKey(TeacherCourse)
-    coursetime = models.timeField('2020-02-26 19:00')#开课时间
-    updatetime = models.TimeField(auto_now=Ture)
+class Recruit(models.Model):#招聘信息
+    name = models.CharField(max_length=30)#职位名称
+    minage = models.IntegerField(default=20)#最小年龄要求
+    maxage = models.IntegerField(default=65)#最大年前要求
+    wages = models.IntegerField(default=7000)#工资
+    education= models.IntegerField(default=0)#0-大专,1-本科，2-研究生，3-硕士
+    description = models.CharField(max_length=500)
+    updatetime = models.DateTimeField(auto_now=True)#
 
-classk Courseflow(models.Model):#课程审批流程
-    course = models.ForeignKey(TeacherCourse)
+class Courseflow(models.Model):#课程审批流程
+    course = models.OneToOneField(TeacherCourse, on_delete=models.CASCADE)
     state = models.IntegerField(default=0)#0-提交 1-通过 2-打回
-    updatetime = models.DateTimeField(auto_now=Ture)#
+    updatetime = models.DateTimeField(auto_now=True)#
