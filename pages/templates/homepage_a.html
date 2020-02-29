@@ -17,24 +17,13 @@
 {% endblock %}
 
 {% block contentbody %}
-    <div style="margin: 0% 10% 0% 10%">
-        <div style="width:100%">
-            <table style="margin: 0% 0% 0% 0%;width:100%">
-                <tr><td style="float:left;font-weight: bold">新闻公告<td></tr>
-                {% for notice in notice_list.all %}
-                    <tr>
-                        <td style="float:left">{{ notice.text }}</td>
-                        <td style="width:300px; height:30px;float:right">{{ notice.time }}</td>
-                    </tr> 
-                    <tr height="32px"></tr>
-                {% endfor %}
-            </table>
-        </div>
+    <div style="margin: 10% 10% 10% 10%">
         <br/>
         <div  style="width:100%">
             <tr>
                 <form enctype='multipart/form-data' action="{% url 'addnotice' %}" method="post" name='addnotice' >{% csrf_token %}
-                    <td><textarea id="id_introduce" placeholder="请输入公告" name="noticetext" style="width:100%; height:100px" autofocus required></textarea></td>
+                    <td><textarea id="id_title" placeholder="请输入标题" name="title" style="width:100%; height:20px" autofocus required></textarea></td>
+                    <td><textarea id="id_text" placeholder="请输入内容" name="noticetext" style="width:100%; height:100px" autofocus required></textarea></td>
                     <td><input type="submit" value="发布公告"  style="width:120px; height:30px;float:right" ></td>
                 </form>
             </tr>

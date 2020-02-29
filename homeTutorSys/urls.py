@@ -60,4 +60,9 @@ urlpatterns = [
     path('mgmessage/', views.mgmessage, name='mgmessage'),
     path('processmsg/<message_id>', views.processmsg, name='processmsg'),
     path('replymsg/<message_id>', views.replymsg, name='replymsg'),
+
+    path('checkcost/', views.checkcost, name='checkcost'),
+    path('publicneed/', views.publicneed, name='publicneed'),
+    path('bookteacher/<teacher_id>', views.bookteacher, name='bookteacher'),
+
 ]

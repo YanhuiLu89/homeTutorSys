@@ -5,7 +5,7 @@ class Users(models.Model):
     usertype = models.IntegerField(default=0)#0-学生，1-老师，2-管理员
     name = models.CharField(max_length=30)#账户名
     fullname = models.CharField(max_length=30,default='')#姓名
-    gender = models.CharField(max_length=10,default='')
+    gender = models.CharField(max_length=10,default=u'男')
     password = models.CharField(max_length=50)
     email = models.EmailField(default='')
     phone=models.CharField(max_length=50,default='')
@@ -19,7 +19,9 @@ class TeacherInfos(models.Model):#老师信息，与user一对一关系
     teacher = models.OneToOneField(Users, on_delete=models.CASCADE)
     title = models.CharField(max_length=200,default="")
     mark = models.IntegerField(default=0 )#打分0-5
-    introduce= models.IntegerField(max_length=300,default=0 )#自我介绍
+    introduce= models.CharField(max_length=200,default="" )#自我介绍
+    fee = models.IntegerField(default=100)#薪水要求每小时
+    education= models.IntegerField(default=0)#0-大专,1-本科，2-研究生，3-硕士
 
 class TeacherCourse(models.Model):#开售的课程
     name=models.CharField(max_length=50)#课程名称
@@ -37,7 +39,8 @@ class StudentCourses(models.Model):#学生发布的所需课程
     introduce = models.CharField(max_length=500)
 
 class Notices(models.Model):#新闻公告
-    text = models.CharField(max_length=500)
+    title = models.CharField(max_length=30,default=u"新闻公告")
+    text = models.CharField(max_length=500,default="")
     time = models.DateTimeField(auto_now=True)
 
 class Messages(models.Model):#留言

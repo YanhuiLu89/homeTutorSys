@@ -49,16 +49,17 @@ def login(request):#入口页
                 #记录cooki
                 request.session['is_login'] = 'true'
                 request.session["username"] = user.name
-                notice_list = Notices.objects.all()
-                context = {'notice_list': notice_list}
+                notice_list = Notices.objects.all().order_by('-time')
                 if user.usertype==0:
-                    print("000000000000000000000000000000000000")
+                    teacherinfo_list = TeacherInfos.objects.all()
+                    context = {'teacherinfo_list': teacherinfo_list,'notice_list': notice_list}
                     response=render(request, 'homepage.html',context)
                 elif user.usertype==1:
                     print("11111111111111111111111111111111")
                     response=render(request, 'homepage_t.html',context)
                 elif user.usertype==2:
                     print("222222222222222222222222222222222222")
+                    context = {'notice_list': notice_list}
                     response=render(request, 'homepage_a.html',context)
                 response.set_cookie("username", name)
                 return response
@@ -72,19 +73,23 @@ def login(request):#入口页
     return render(request, 'login.html')
     
 def home(request):#主页
+    print("home in")
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
     user = Users.objects.get(name = cook)
-    notice_list = Notices.objects.all()
-    context = {'notice_list': notice_list}
+    notice_list = Notices.objects.all().order_by('-time')
     if user.usertype == 0:
-        return render(request, 'homepage.html',context)
+        teacherinfo_list = TeacherInfos.objects.all()
+        context = {'teacherinfo_list': teacherinfo_list,'notice_list': notice_list}
+        response=render(request, 'homepage.html',context)
     elif user.usertype == 1:
         return render(request, 'homepage_t.html',context)
     elif user.usertype == 2:
-        return render(request, 'homepage_a.html',context)
+        context = {'notice_list': notice_list}
+        response=render(request, 'homepage_a.html',context)
+    return response
 
 def logout(request):#退出登录
     request.session.delete()
@@ -187,7 +192,7 @@ def editmyinfo(request):#我的
             admin.admin_name=temp_name
             admin.admin_phone=temp_phone
             admin.save()
-        return HttpResponseRedirect(reverse('pages:my'))
+        return HttpResponseRedirect(reverse('my'))
 
 def my(request):#我的
     cook = request.COOKIES.get("username")
@@ -197,8 +202,8 @@ def my(request):#我的
     user = Users.objects.get(name = cook)
     if user.usertype==0:
         student=StudentInfos.objects.get(student=user)
-        mywork=Workflow.objects.filter(Q(fromuser=student)|Q(currentuser=user.name))
-        context = {'student': student,'work_list':mywork}
+        # myneed=StudentCourses.objects.filter(student=student)
+        context = {'student': student}
         return render(request, 'my.html',context)
     elif user.usertype==1:
         teacher=TeacherInfos.objects.get(teacher=user)
@@ -290,7 +295,7 @@ def adddesign(request):#添加课题
             teacher=TeacherInfos.objects.get(teacher=user)
             desig = Designs(teacher=teacher,idno=temp_idnum,type=temp_type,subject=temp_subject,introduce=temp_introduce)
             desig.save()
-            return HttpResponseRedirect(reverse('pages:mgdesign'))#重定向到选题管理页面
+            return HttpResponseRedirect(reverse('mgdesign'))#重定向到选题管理页面
 
     return render(request, 'adddesign.html')
 
@@ -345,7 +350,7 @@ def reviewclick(request,workflow_id):
             selfdesig.state=2
             selfdesig.save()
     work.save()
-    return HttpResponseRedirect(reverse('pages:reviewdesign'))
+    return HttpResponseRedirect(reverse('reviewdesign'))
     
 def reviewselfdesign(request,selfdesign_id):
     cook = request.COOKIES.get("username")#审核课题
@@ -361,7 +366,7 @@ def reviewselfdesign(request,selfdesign_id):
         elif 'back' in request.POST:
             work.state='打回'
     work.save()
-    return HttpResponseRedirect(reverse('pages:reviewdesign'))
+    return HttpResponseRedirect(reverse('reviewdesign'))
 
 def toeditdesign(request,design_idno):#编辑课题
     cook = request.COOKIES.get("username")
@@ -392,7 +397,7 @@ def editdesign(request,design_idno):#点击编辑链接跳转到编辑页面
         design.subject=temp_subject
         design.introduce=temp_introduce
         design.save()
-        return HttpResponseRedirect(reverse('pages:mgdesign'))#重定向到选题管理页面
+        return HttpResponseRedirect(reverse('mgdesign'))#重定向到选题管理页面
     context = {'curdesign': design}
     return render(request, 'editdesign.html', context)
 
@@ -405,7 +410,7 @@ def deldesign(request,design_idno):#删除课题
     design=Designs.objects.get(idno=tempid)
     Workflow.objects.filter(subject=design.subject).delete()#课题被删除时对应的任务页删除
     Designs.objects.filter(idno=design_idno).delete()
-    return HttpResponseRedirect(reverse('pages:mgdesign'))#重定向到选题管理页面
+    return HttpResponseRedirect(reverse('mgdesign'))#重定向到选题管理页面
 
 ###############################管理员相关view##################################################
 def mgstudent(request):#
@@ -414,6 +419,7 @@ def mgstudent(request):#
     if cook == None:
         return  render(request, 'index.html')
     studentinfo_list = StudentInfos.objects.all()
+    print('studentinfo_list.count():', studentinfo_list.count())
     context = {'studentinfo_list': studentinfo_list}
     return render(request, 'mgstudent.html',context)
 
@@ -435,7 +441,7 @@ def addstudent(request):#
             user.save()
             student=StudentInfos(student=user,student_name=student_name)
             student.save()
-            return HttpResponseRedirect(reverse('pages:mgstudent'))
+            return HttpResponseRedirect(reverse('mgstudent'))
     return render(request, 'mgstudent.html')
 
 def delstudent(request,user_id):#
@@ -444,8 +450,8 @@ def delstudent(request,user_id):#
     if cook == None:
         return  render(request, 'index.html')#如果没有登录返回到入口页面
     tempid = user_id
-    Users.objects.filter(name=tempid).delete()
-    return HttpResponseRedirect(reverse('pages:mgstudent'))#重定向到老师管理页面
+    Users.objects.filter(id=tempid).delete()
+    return HttpResponseRedirect(reverse('mgstudent'))#重定向到老师管理页面
 
 #管理老师相关接口
 def mgteacher(request):#
@@ -475,7 +481,7 @@ def addteacher(request):#
             user.save()
             teacher=TeacherInfos(teacher=user,teacher_name=teacher_name)
             teacher.save()
-            return HttpResponseRedirect(reverse('pages:mgteacher'))
+            return HttpResponseRedirect(reverse('mgteacher'))
     return render(request, 'mgteacher.html')
 
 def delteacher(request,user_id):#
@@ -485,7 +491,7 @@ def delteacher(request,user_id):#
         return  render(request, 'index.html')
     tempid = user_id
     Users.objects.filter(name=tempid).delete()
-    return HttpResponseRedirect(reverse('pages:mgteacher'))#重定向到老师管理页面
+    return HttpResponseRedirect(reverse('mgteacher'))#重定向到老师管理页面
 
 def mgmessage(request):#留言管理
     cook = request.COOKIES.get("username")
@@ -506,12 +512,12 @@ def processmsg(request,message_id):#删除或回复留言
     if request.method == 'POST':
         if 'delmsg' in request.POST:
             Messages.objects.filter(id= temp_id).delete()#删除留言
-            return HttpResponseRedirect(reverse('pages:mgmessage'))
+            return HttpResponseRedirect(reverse('mgmessage'))
         elif 'replymsg' in request.POST:#回复留言
             message=Messages.objects.get(id=temp_id)
             context={'message':message}
             return render(request, 'replymessage.html',context)
-    return HttpResponseRedirect(reverse('pages:mgmessage'))
+    return HttpResponseRedirect(reverse('mgmessage'))
 
 def replymsg(request,message_id):#删除或回复留言
     cook = request.COOKIES.get("username")
@@ -525,7 +531,7 @@ def replymsg(request,message_id):#删除或回复留言
         message.reply=temp_reply_content
         message.updatetime=timezone.now()
         message.save()
-    return HttpResponseRedirect(reverse('pages:mgmessage'))
+    return HttpResponseRedirect(reverse('mgmessage'))
 
 def leavmessage(request):#留言
     cook = request.COOKIES.get("username")
@@ -539,18 +545,23 @@ def leavmessage(request):#留言
         message=Messages(fromuser=student,text=temp_message,reply='',updatetime=timezone.now())
         message.save()
         messages.add_message(request,messages.INFO,'留言成功，可在 消息 中查看留言回复')
-    return HttpResponseRedirect(reverse('pages:home'))
+    return HttpResponseRedirect(reverse('home'))
 
 def addnotice(request):#
+    print("addnotice in")
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
+        print("cook == None")
         return  render(request, 'index.html')
     if request.method == 'POST':
-        temp_test=request.POST['noticetext']
-        notice=Notices(text=temp_test,time=timezone.now())
+        print("request.method == 'POST'")
+        temp_title=request.POST['title']
+        temp_text=request.POST['noticetext']
+        notice=Notices(title=temp_title,text=temp_text,time=timezone.now())
         notice.save()
-    return HttpResponseRedirect(reverse('pages:home'))
+        print(notice.text)
+    return HttpResponseRedirect(reverse('home'))
 
 ###############################学生相关view##################################################
 def selectdesign(request):#选题页面
@@ -663,3 +674,32 @@ def definedesign(request):
     teacher_list=TeacherInfos.objects.all()
     content={'teacher_list':teacher_list}
     return render(request, 'definedesign.html',content)
+
+def checkcost(request):#选题页面
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    design_list=Designs.objects.all()
+    teacher_list=TeacherInfos.objects.all()
+    context = {'design_list': design_list,'teacher_list':teacher_list}
+
+def publicneed(request):#选题页面
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    design_list=Designs.objects.all()
+    teacher_list=TeacherInfos.objects.all()
+    context = {'design_list': design_list,'teacher_list':teacher_list}
+
+def bookteacher(request,teacher_id):#选题页面
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    design_list=Designs.objects.all()
+    teacher_list=TeacherInfos.objects.all()
+    context = {'design_list': design_list,'teacher_list':teacher_list}
+
+    

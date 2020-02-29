@@ -16,28 +16,41 @@
             /* background:url("/static/images/sues.jpg"); */
             background-size: 100%,100%;
         }
-        /*定义头部布局，前面的div可以不用写，#号前面默认有个id，凡事定义了id的标签，都可以用#号来表示*/
+
+      /*定义菜单样式*/
         #topmenucenter{
-            width: 100%;
-            height: 48px;
-            font-size:16px;
-            background-color:rgb(4, 138, 228);
+            width: 80%;
+            height: 52px;
+            font-size:20px;
+            background-color:rgb(177, 207, 228);
             border:0;
             font-weight: bold;
+            float:top;
+            vertical-align   : top;
         }
-        #slidbar{
-            width: 10%;
-            height: 100%;
-            font-size:16px;
+         /*定义右侧菜单样式*/
+        #topmenuright{
+            width: 20%;
+            height: 52px;
+            font-size:12px;
             background-color:rgb(177, 207, 228);
             border:0;
             font-weight: bold;
             float:right;
         }
+        #slidbar{
+            width: 20%;
+            height: 100%;
+            font-size:16px;
+            background-color:white;
+            font-weight: bold;
+            float:right;
+            background-color:rgb(248,246,231)
+        }
         #content_body{
-            width: 90%;
+            width: 80%;
             height: 852px;
-            float: right;
+            float: left;
             font-size:28px;        
         }
         #link{
@@ -51,35 +64,59 @@
         padding: 6px;
         text-decoration:none;
         color:white;     
+        }
+        #textcontent {
+        width: 100%;
+        height: auto;
+        font-size:20px;
+        word-wrap:break-word;
+        word-break:break-all;
+        overflow: hidden;
     }
     </style>
     {% block style %}
     {% endblock %}
 </head>
-<style>       html,body{text-align:center;margin:5px auto;}
+<style>       
+    html,body{text-align:center;margin:5px auto;}
 </style>
 <body>
     <!-- 在这里控制全局的页面，定义div的id是"global" -->
     <div id="global">
-        <div id="topmenucenter">
+        <div id="heading" align="left">
+            {% block heading %}
+               <label >爱学习家教中介系统</label>
+            {% endblock %}
+        </div>
+        <div id="topmenuright" align="right" >
+            <table>
+                    <tr>
+                        <td><a id =link  href="{% url 'msgcenter' %}">消息</a></td>
+                        <td><a id =link  href="{% url 'my' %}">我的</a></td>
+                        <td><a id =link href="{% url 'logout' %}">退出</a></td>
+                    </tr>
+            </table>
+        </div>
+        <div id="topmenucenter" >
             {% block topmenucenter %}
             {% endblock %}
         </div>
-        <div id="slidbar" >
+        <div id="slidbar">
             {% block slidbar %}
-            <table style="margin: 5% 5% 5% 5%">
-                    <tr><td><a id =link  href="{% url 'msgcenter' %}">消息</a></td></tr>
-                    <tr><td><a id =link  href="{% url 'my' %}">我的</a></td></tr>
-                    <tr><td><a id =link href="{% url 'logout' %}">退出</a</td></tr>
-            </table>
+                <h2>新闻公告</h2>
+                {% for notice in notice_list.all %}
+                    <h4>{{ notice.title }}<h4>
+                    <p align="left">{{ notice.text }}</p>
+                    <p align="right">{{ notice.time }}</p>
+                {% endfor %}
             {% endblock %}
         </div>
         <div id="content_body">
-            <div>
+             <div>
                 {% for message in messages %}
                     <div class='alert alert-{{message.tags}}' style="color:coral">{{ message }}</div>
                 {% endfor %}
-                </div>
+            </div>
             {% block contentbody %}
             {% endblock %}
         </div>
