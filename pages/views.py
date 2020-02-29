@@ -225,16 +225,15 @@ def mgcourse(request):#
     if cook == None:
         return  render(request, 'index.html')
     user = Users.objects.get(name = cook)
+    notice_list = Notices.objects.all().order_by('-time')
     if user.usertype==1:#老师只管理自己的课程
         teacher=TeacherInfos.objects.get(teacher=user)
         design_list=Designs.objects.filter(teacher=teacher)
         context = {'design_list': design_list}
         return render(request, 'mgcourse.html',context)
     elif user.usertype==2:#管理员管理所有的课程
-        teacher_list=TeacherInfos.objects.all()
-        design_list=Designs.objects.all()
-        context = {'design_list': design_list,'teacher_list':teacher_list}
-        print('好困好困:',len(teacher_list))
+        course_list=TeacherCourse.objects.all().order_by('-id')
+        context = {'notice_list': notice_list,'teachercourse_list': course_list}
         return render(request, 'mgcourse_a.html',context)
 
 def mgcost(request):#
@@ -264,16 +263,8 @@ def mgrecruit(request):#
     recruit_list=Recruit.objects.all()
     context = {'recruit_list': recruit_list}
     return render(request, 'mgrecruit.html',context)
-
-
-def toadddesign(request):#跳转到添加课题页面
-    cook = request.COOKIES.get("username")
-    print('cook:', cook)
-    if cook == None:
-        return  render(request, 'index.html')
-    return render(request, 'adddesign.html')
     
-def adddesign(request):#添加课题
+def addcourse(request):#添加课题
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
@@ -285,7 +276,7 @@ def adddesign(request):#添加课题
         temp_introduce= request.POST['introduce']
         if Designs.objects.filter(subject=temp_subject).exists():
             messages.add_message(request,messages.ERROR,'该课题已经存在')
-            return render(request, 'adddesign.html')
+            return render(request, 'addcourse.html')
         else:
             #自动计算编号
             list=Designs.objects.filter(type=temp_type)
@@ -295,9 +286,10 @@ def adddesign(request):#添加课题
             teacher=TeacherInfos.objects.get(teacher=user)
             desig = Designs(teacher=teacher,idno=temp_idnum,type=temp_type,subject=temp_subject,introduce=temp_introduce)
             desig.save()
-            return HttpResponseRedirect(reverse('mgdesign'))#重定向到选题管理页面
-
-    return render(request, 'adddesign.html')
+            return HttpResponseRedirect(reverse('mgdcourse'))#重定向到选题管理页面
+    notice_list = Notices.objects.all().order_by('-time')
+    context = {'notice_list': notice_list}
+    return render(request, 'addcourse.html',context)
 
 def reviewdesign(request):#
     cook = request.COOKIES.get("username")#审核课题
@@ -368,17 +360,7 @@ def reviewselfdesign(request,selfdesign_id):
     work.save()
     return HttpResponseRedirect(reverse('reviewdesign'))
 
-def toeditdesign(request,design_idno):#编辑课题
-    cook = request.COOKIES.get("username")
-    print('cook:', cook)
-    if cook == None:
-        return  render(request, 'index.html')
-    tempid=design_idno
-    curdesign=Designs.objects.get(idno=tempid)
-    context = {'design': curdesign}
-    return render(request, 'editdesign.html', context)
-
-def editdesign(request,design_idno):#点击编辑链接跳转到编辑页面
+def editcourse(request,design_idno):#点击编辑链接跳转到编辑页面
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
@@ -401,7 +383,7 @@ def editdesign(request,design_idno):#点击编辑链接跳转到编辑页面
     context = {'curdesign': design}
     return render(request, 'editdesign.html', context)
 
-def deldesign(request,design_idno):#删除课题
+def delcourse(request,design_idno):#删除课题
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:

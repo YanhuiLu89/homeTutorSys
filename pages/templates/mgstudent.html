@@ -56,7 +56,7 @@
                             {% for studentcourse in studentinfo.studentcourses_set.all %}
                                 <a  href="{% url 'studentcoursedetail' studentcourse.id %}">&nbsp&nbsp{{ studentcourse.name}}</a>
                             {% endfor %}
-                            </td style="border:1px solid #000000;">
+                            </td >
                             <td style="border:1px solid #000000;"><a href="{% url 'delstudent' studentinfo.student.id %}">删除</a></td>
                         </tr>
                     {% endfor %}

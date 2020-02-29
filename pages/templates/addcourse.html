@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block head %}  
+<br/>
+{% endblock %}
+
+{% block topmenucenter %}
+    <div style="padding:20px">
+        <a id =link href="{% url 'home' %}">首页</a>
+        <a id =selectedlink  href="{% url 'mgcourse' %}">课程管理</a> 
+        <a id =link  href="{% url 'mgstudent' %}">学生管理</a> 
+        <a id =link  href="{% url 'mgteacher' %}">老师管理</a> 
+        <a id =link  href="{% url 'mgcost' %}">资费管理</a>
+        <a id =link  href="{% url 'mgmessage' %}">留言管理</a> 
+        <a id =link  href="{% url 'mgrecruit' %}">招聘管理</a>
+    </div>
+{% endblock %}
+
+{% block contentbody %}
+<div style="width:90%;margin:5% auto">
+        <form enctype='multipart/form-data' action="{% url 'addcourse' %}" method="post" name='addcourse' >{% csrf_token %}
+            <table align="center" >
+                <tr>
+                    <td style="width:10%">课程名称</td>
+                    <td style="width:90%"><input type="text" id="id_name" name="subject" placeholder="请输入课程名称，如""高三数学"",""芭蕾舞""等" style="width:100%; height:60px" autofocus required  /></td>
+                </tr>
+                <tr>
+                    <td>年级</td>
+                    <td style="width: 50%;height:60px">
+                        <select id="GS"  name="grade" panelHeight="auto" style="width: 100%;height:30px;float:left">
+                        <option value=GS>高三</option>
+                        <option value=GE>高二</option>
+                        <option value=GY>高一</option>
+                        <option value=CS>初三</option>
+                        <option value=CE>初二</option>
+                        <option value=CS>初一</option>
+                        <option value=XX>小学</option>
+                        <option value=XQ>学前</option>
+                        <option value=QT>其他</option>
+                        </select> 
+                    </td>
+                </tr>
+                    <tr>
+                    <td>科目</td>
+                    <td style="width: 50%;height:60px">
+                        <select id="SX"  name="subject" panelHeight="auto" style="width: 100%;height:30px;float:left">
+                        <option value=SX>数学</option>
+                        <option value=YY>英语</option>
+                        <option value=YW>语文</option>
+                        <option value=WL>物理</option>
+                        <option value=HX>化学</option>
+                        <option value=SW>生物</option>
+                        <option value=LS>历史</option>
+                        <option value=ZZ>政治</option>
+                        <option value=QT>其他</option>
+                        </select> 
+                    </td>
+                </tr>
+                <tr>
+                        <td>简介</td>
+                        <td><textarea id="id_introduce" placeholder="请输入简介" name="introduce"   style="width:100%; height:300px"></textarea></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="确认添加" style="width:120px; height:30px;float:right" ></td>
+                </tr>
+        </table>     
+    </form>
+</div>
+{% endblock %}
