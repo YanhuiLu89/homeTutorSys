@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block head %}  
+<br/>
+{% endblock %}
+
+{% block topmenucenter %}
+    <div style="padding:5px">
+        <a id =link href="{% url 'home' %}">首页</a>
+        <a id =link href="{% url 'checkcost' %}">资费标准</a>
+        <a id =link  href="{% url 'publicneed' %}">发布需求</a> 
+    </div>
+{% endblock %}
+
+{% block contentbody %}
+<div style="width:90%;margin:5% auto">
+        <form enctype='multipart/form-data' action="{% url 'bookteacher' teacher.id %}" method="post" name='bookteacher' >{% csrf_token %}
+            <h4>预约{{teacher.name}}老师</h4>
+            <table align="center" >
+                <tr>
+                    <td style="width:20%">*你的称呼</td>
+                    <td style="width:80%"><input type="text" id="id_name" name="name" placeholder="请输入你的姓名，如王先生" style="width:100%; height:60px" autofocus required  /></td>
+                </tr>
+                <tr>
+                    <td style="width:20%">你的eamil</td>
+                    <td style="width:80%"><input type="text" id="id_name" name="mail" placeholder="请输入你的邮箱" style="width:100%; height:60px"  /></td>
+                </tr>
+                <tr>
+                    <td style="width:20%">*你的电话</td>
+                    <td style="width:80%"><input type="text" id="id_name" name="phone" placeholder="请输入你的电话" style="width:100%; height:60px" autofocus required  /></td>
+                </tr>
+                <tr>
+                    <td style="width:20%">*授课地址</td>
+                    <td style="width:80%"><input type="text" id="id_name" name="address" placeholder="请输入授课地址" style="width:100%; height:60px" autofocus required  /></td>
+                </tr>
+                <tr>
+                    <td style="width:20%">备注留言</td>
+                    <td style="width:80%"><textarea id="id_demand" placeholder="请输入对老师要求，上课时间要求等" name="demand" style="width:100%; height:300px"></textarea></td>
+                </tr>
+                <tr>
+                    <td style="width:20%"></td>
+                    <td><input type="submit" value="确认提交" style="width:120px; height:30px;float:right" ></td>
+                </tr>
+        </table>     
+    </form>
+</div>
+{% endblock %}

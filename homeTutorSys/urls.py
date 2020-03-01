@@ -63,5 +63,5 @@ urlpatterns = [
     path('publicneed/', views.publicneed, name='publicneed'),
     path('bookteacher/<teacher_id>', views.bookteacher, name='bookteacher'),
     path('studentcoursedetail/<stcourse_id>', views.studentcoursedetail, name='studentcoursedetail'),
-
+    path('teacherdetail/<teacher_id>', views.teacherdetail, name='teacherdetail'),
 ]

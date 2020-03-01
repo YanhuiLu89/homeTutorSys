@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.db.models import Q 
 from django.utils import timezone
 
-from .models import Users,TeacherInfos,StudentInfos,Notices,Messages,TeacherCourse,StudentCourses,Courseflow
+from .models import Users,TeacherInfos,StudentInfos,Notices,Messages,TeacherCourse,StudentCourses,Courseflow,BookCourseflow
 # Create your views here.
 ###############################公共view##################################################
 def index(request):#入口页
@@ -208,7 +208,8 @@ def my(request):#我的
     if user.usertype==0:
         student=StudentInfos.objects.get(student=user)
         studentcourses_list=StudentCourses.objects.filter(student=student)
-        context = {'notice_list': notice_list,'studentinfo': student,'studentcourses_list':studentcourses_list}
+        bookcourseflow_list=BookCourseflow.objects.filter(student=student)
+        context = {'notice_list': notice_list,'studentinfo': student,'studentcourses_list':studentcourses_list,'bookcourseflow_list':bookcourseflow_list}
         return render(request, 'my.html',context)
     elif user.usertype==1:
         teacher=TeacherInfos.objects.get(teacher=user)
@@ -687,17 +688,47 @@ def publicneed(request):#选题页面
     context = {'notice_list': notice_list}
     return render(request, 'publicneed.html',context)
 
-def bookteacher(request,teacher_id):#选题页面
+def bookteacher(request,teacher_id):#预约老师
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    design_list=Designs.objects.all()
-    teacher_list=TeacherInfos.objects.all()
-    context = {'design_list': design_list,'teacher_list':teacher_list}
+    user=Users.objects.get(name=cook)
+    student=StudentInfos.objects.get(student=user)
+    teacher=Users.objects.get(id=teacher_id)
+    teacherinfo=TeacherInfos.objects.get(teacher=teacher)
+    if  request.method == 'POST':
+        temp_name = request.POST['name']
+        temp_phone = request.POST['phone']
+        temp_mail = request.POST['mail']
+        temp_address = request.POST['address']
+        temp_demand = request.POST['demand']
+        bookcourseflow=BookCourseflow(student=student,callname=temp_name,teacher=teacherinfo,phone=temp_phone,mail=temp_mail,address=temp_address,demand=temp_demand)
+        bookcourseflow.save()
+        messages.add_message(request,messages.INFO,'预约已提交，可在 我的->我的预约 中查看')
+    notice_list = Notices.objects.all().order_by('-time')
+    context = {'teacher': teacher,'notice_list': notice_list}
+    return render(request, 'bookteacher.html',context)
 
     
 def studentcoursedetail(request,stcourse_id):
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html',context)
+    user=Users.objects.get(name=cook)
+    temp_stcourse_id=stcourse_id
+    studentcourse=StudentCourses.objects.get(id=temp_stcourse_id)
+    notice_list = Notices.objects.all().order_by('-time')
+    context = {'studentcourse': studentcourse,'notice_list': notice_list}
+    if user.usertype==0:
+        return render(request, 'studentcoursedetail.html',context)
+    elif user.usertype==1:
+        return render(request, 'studentcoursedetail_t.html',context)
+    elif user.usertype==2:
+        return render(request, 'studentcoursedetail_a.html',context)
+
+def teacherdetail(request,teacher_id):
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
