@@ -36,7 +36,8 @@ class StudentCourses(models.Model):#学生发布的所需课程
     name=models.CharField(max_length=50)
     grade = models.CharField(max_length=40,default=u"高三")
     subject = models.CharField(max_length=200,default=u"英语")
-    introduce = models.CharField(max_length=500)
+    demand = models.CharField(max_length=500,default="")
+    time = models.DateTimeField(auto_now=True)
 
 class Notices(models.Model):#新闻公告
     title = models.CharField(max_length=30,default=u"新闻公告")
@@ -59,7 +60,14 @@ class Recruit(models.Model):#招聘信息
     description = models.CharField(max_length=500)
     updatetime = models.DateTimeField(auto_now=True)#
 
-class Courseflow(models.Model):#课程审批流程
+class Courseflow(models.Model):#老师提交课程审批流程
     course = models.OneToOneField(TeacherCourse, on_delete=models.CASCADE)
     state = models.IntegerField(default=0)#0-提交 1-通过 2-打回
+    updatetime = models.DateTimeField(auto_now=True)#
+
+class BookCourseflow(models.Model):#预约课程状态
+    student = models.OneToOneField(StudentInfos, on_delete=models.CASCADE)
+    course = models.ForeignKey(TeacherCourse, on_delete=models.CASCADE)
+    teacher=models.ForeignKey(TeacherInfos, on_delete=models.CASCADE,default=None)
+    state = models.IntegerField(default=0)#0-待上课 1-已完成 2已取消
     updatetime = models.DateTimeField(auto_now=True)#

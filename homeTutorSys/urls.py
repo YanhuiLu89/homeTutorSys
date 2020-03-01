@@ -37,7 +37,7 @@ urlpatterns = [
     path('mgrecruit/', views.mgrecruit, name='mgrecruit'),
     path('addcourse/', views.addcourse, name='addcourse'),
     path('delcourse/<course_id>', views.delcourse, name='delcourse'),
-    path('editcourse/<design_idno>', views.editcourse, name='editcourse'),
+    path('editcourse/<course_id>', views.editcourse, name='editcourse'),
     #path('submitdesign/', views.submitdesign, name='submitdesign'),
     path('definedesign/', views.definedesign, name='definedesign'),
 
@@ -62,5 +62,6 @@ urlpatterns = [
     path('checkcost/', views.checkcost, name='checkcost'),
     path('publicneed/', views.publicneed, name='publicneed'),
     path('bookteacher/<teacher_id>', views.bookteacher, name='bookteacher'),
+    path('studentcoursedetail/<stcourse_id>', views.studentcoursedetail, name='studentcoursedetail'),
 
 ]

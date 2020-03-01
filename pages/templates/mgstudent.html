@@ -43,9 +43,9 @@
                             <td style="border:1px solid #000000;">{{studentinfo.student.name}}</td>
                             <td style="border:1px solid #000000;">{{studentinfo.student.fullname}}</td>
                             <td style="border:1px solid #000000;">{{studentinfo.student.gender}}</td>
-                            <td style="border:1px solid #000000;">{{studentinfo.student.grade}}</td>
+                            <td style="border:1px solid #000000;">{{studentinfo.grade}}</td>
                             <td style="border:1px solid #000000;">{{studentinfo.student.phone}}</td>
-                            <td style="border:1px solid #000000;">{{studentinfo.student.mail}}</td>
+                            <td style="border:1px solid #000000;">{{studentinfo.student.email}}</td>
                             <td style="border:1px solid #000000;">{{studentinfo.student.address}}</td>
                             <td style="border:1px solid #000000;">
                                 {% for teachercourse in studentinfo.teachercourse_set.all %}
@@ -54,7 +54,7 @@
                             </td>
                             <td style="border:1px solid #000000;">
                             {% for studentcourse in studentinfo.studentcourses_set.all %}
-                                <a  href="{% url 'studentcoursedetail' studentcourse.id %}">&nbsp&nbsp{{ studentcourse.name}}</a>
+                                <a  href="{% url 'studentcoursedetail' studentcourse.id %}" >&nbsp&nbsp{{ studentcourse.name}}</a>
                             {% endfor %}
                             </td >
                             <td style="border:1px solid #000000;"><a href="{% url 'delstudent' studentinfo.student.id %}">删除</a></td>

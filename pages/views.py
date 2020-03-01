@@ -144,10 +144,11 @@ def editmyinfo(request):#我的
     if cook == None:
         return  render(request, 'index.html')
     user = Users.objects.get(name = cook)
+    notice_list = Notices.objects.all().order_by('-time')
     if request.method == 'GET':#连接到信息编辑页面
         if user.usertype==0:
-            student=StudentInfos.objects.get(student=user)
-            context = {'student': student}
+            studentinfo=StudentInfos.objects.get(student=user)
+            context = {'notice_list': notice_list,'studentinfo': studentinfo}
             return render(request, 'editmyinfo.html',context)
         elif user.usertype==1:
             teacher=TeacherInfos.objects.get(teacher=user)
@@ -160,19 +161,22 @@ def editmyinfo(request):#我的
     elif request.method == 'POST':#编辑提交
         if user.usertype==0:
             temp_name=request.POST['name']
-            temp_major=request.POST['major']
+            temp_fullname=request.POST['fullname']
             temp_grade=request.POST['grade']
-            temp_class=request.POST['class']
+            temp_gender=request.POST['gender']
             temp_phone=request.POST['phone']
             temp_address=request.POST['address']
-            student=StudentInfos.objects.get(student=user)
-            student.student_name=temp_name
-            student.student_major=temp_major
-            student.student_grade=temp_grade
-            student.student_class=temp_class
-            student.student_phone=temp_phone
-            student.student_address=temp_address
-            student.save()
+            temp_password=request.POST['password']
+            studentinfo=StudentInfos.objects.get(student=user)
+            user.ame=temp_name
+            user.fullname=temp_fullname
+            studentinfo.grade=temp_grade
+            user.gender=temp_gender
+            user.phone=temp_phone
+            user.address=temp_address
+            userpassword=temp_password
+            user.save()
+            studentinfo.save()
         elif user.usertype==1:
             temp_name=request.POST['name']
             temp_major=request.POST['major']
@@ -200,10 +204,11 @@ def my(request):#我的
     if cook == None:
         return  render(request, 'index.html')
     user = Users.objects.get(name = cook)
+    notice_list = Notices.objects.all().order_by('-time')
     if user.usertype==0:
         student=StudentInfos.objects.get(student=user)
-        # myneed=StudentCourses.objects.filter(student=student)
-        context = {'student': student}
+        studentcourses_list=StudentCourses.objects.filter(student=student)
+        context = {'notice_list': notice_list,'studentinfo': student,'studentcourses_list':studentcourses_list}
         return render(request, 'my.html',context)
     elif user.usertype==1:
         teacher=TeacherInfos.objects.get(teacher=user)
@@ -270,25 +275,25 @@ def addcourse(request):#添加课题
     if cook == None:
         return  render(request, 'index.html')
     user = Users.objects.get(name = cook)
-    if  request.method == 'POST':
-        temp_subject = request.POST['subject']
-        temp_type = request.POST['type']
-        temp_introduce= request.POST['introduce']
-        if Designs.objects.filter(subject=temp_subject).exists():
-            messages.add_message(request,messages.ERROR,'该课题已经存在')
-            return render(request, 'addcourse.html')
-        else:
-            #自动计算编号
-            list=Designs.objects.filter(type=temp_type)
-            print('count:',list.count())
-            temp_idnum=temp_type+str(list.count()+101)
-            print('temp_idnum:',temp_idnum)
-            teacher=TeacherInfos.objects.get(teacher=user)
-            desig = Designs(teacher=teacher,idno=temp_idnum,type=temp_type,subject=temp_subject,introduce=temp_introduce)
-            desig.save()
-            return HttpResponseRedirect(reverse('mgdcourse'))#重定向到选题管理页面
     notice_list = Notices.objects.all().order_by('-time')
     context = {'notice_list': notice_list}
+    if  request.method == 'POST':
+        temp_subject = request.POST['subject']
+        temp_name = request.POST['name']
+        temp_introduce= request.POST['introduce']
+        temp_grade = request.POST['grade']
+        if TeacherCourse.objects.filter(Q(subject=temp_subject)&Q(grade=temp_grade)&Q(name=temp_name)).exists():
+            messages.add_message(request,messages.ERROR,'该课课程已经存在')
+            if user.usertype==1:
+                messages.add_message(request,messages.ERROR,'请直接在已有课程中选择')
+            return render(request, 'addcourse.html')
+        else:
+            teachercourse = TeacherCourse(name=temp_name,grade=temp_grade,subject=temp_subject,introduce=temp_introduce)
+            if user.usertype==1:
+                teacher=TeacherInfos.objects.get(teacher=user)
+                teachercourse.teacher.add(teacher)
+            teachercourse.save()
+            return HttpResponseRedirect(reverse('mgcourse'))#重定向到选题管理页面
     return render(request, 'addcourse.html',context)
 
 def reviewdesign(request):#
@@ -360,39 +365,36 @@ def reviewselfdesign(request,selfdesign_id):
     work.save()
     return HttpResponseRedirect(reverse('reviewdesign'))
 
-def editcourse(request,design_idno):#点击编辑链接跳转到编辑页面
+def editcourse(request,course_id):#点击编辑链接跳转到编辑页面
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    tempid=design_idno
-    design=Designs.objects.get(idno=tempid)
+    tempid=course_id
+    course=TeacherCourse.objects.get(id=tempid)
     if request.method == 'POST':
         temp_subject = request.POST['subject']
-        temp_type = request.POST['type']
+        temp_grade = request.POST['grade']
+        temp_name = request.POST['name']
         temp_introduce= request.POST['introduce']
-        if temp_type!=design.type:#类型变了重新计算编号
-            list=Designs.objects.filter(type=temp_type)
-            temp_idnum=temp_type+str(list.count()+101)
-            design.idno=temp_idnum
-            design.type=temp_type
-        design.subject=temp_subject
-        design.introduce=temp_introduce
-        design.save()
-        return HttpResponseRedirect(reverse('mgdesign'))#重定向到选题管理页面
-    context = {'curdesign': design}
-    return render(request, 'editdesign.html', context)
+        course.name=temp_name
+        course.grade=temp_grade
+        course.subject=temp_subject
+        course.introduce=temp_introduce
+        course.save()
+        return HttpResponseRedirect(reverse('mgcourse'))#重定向到选题管理页面
+    notice_list = Notices.objects.all().order_by('-time')
+    context = {'course': course,'notice_list': notice_list}
+    return render(request, 'editcourse.html', context)
 
-def delcourse(request,design_idno):#删除课题
+def delcourse(request,course_id):#删除课题
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    tempid = design_idno
-    design=Designs.objects.get(idno=tempid)
-    Workflow.objects.filter(subject=design.subject).delete()#课题被删除时对应的任务页删除
-    Designs.objects.filter(idno=design_idno).delete()
-    return HttpResponseRedirect(reverse('mgdesign'))#重定向到选题管理页面
+    tempid = course_id
+    TeacherCourse.objects.filter(id=tempid).delete()
+    return HttpResponseRedirect(reverse('mgcourse'))#重定向到选题管理页面
 
 ###############################管理员相关view##################################################
 def mgstudent(request):#
@@ -671,9 +673,19 @@ def publicneed(request):#选题页面
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    design_list=Designs.objects.all()
-    teacher_list=TeacherInfos.objects.all()
-    context = {'design_list': design_list,'teacher_list':teacher_list}
+    user = Users.objects.get(name = cook)
+    student=StudentInfos.objects.get(student=user)
+    if  request.method == 'POST':
+        temp_name = request.POST['name']
+        temp_grade = request.POST['grade']
+        temp_subject = request.POST['subject']
+        temp_demand = request.POST['demand']
+        studentcourse=StudentCourses(student=student,name=temp_name,grade=temp_grade,subject=temp_subject,demand=temp_demand)
+        studentcourse.save()
+        messages.add_message(request,messages.INFO,'已发布《'+temp_name+'》需求，可在 我的->我的需求 中查看')
+    notice_list = Notices.objects.all().order_by('-time')
+    context = {'notice_list': notice_list}
+    return render(request, 'publicneed.html',context)
 
 def bookteacher(request,teacher_id):#选题页面
     cook = request.COOKIES.get("username")
@@ -685,3 +697,19 @@ def bookteacher(request,teacher_id):#选题页面
     context = {'design_list': design_list,'teacher_list':teacher_list}
 
     
+def studentcoursedetail(request,stcourse_id):
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html',context)
+    user=Users.objects.get(name=cook)
+    temp_stcourse_id=stcourse_id
+    studentcourse=StudentCourses.objects.get(id=temp_stcourse_id)
+    notice_list = Notices.objects.all().order_by('-time')
+    context = {'studentcourse': studentcourse,'notice_list': notice_list}
+    if user.usertype==0:
+        return render(request, 'studentcoursedetail.html',context)
+    elif user.usertype==1:
+        return render(request, 'studentcoursedetail_t.html',context)
+    elif user.usertype==2:
+        return render(request, 'studentcoursedetail_a.html',context)
