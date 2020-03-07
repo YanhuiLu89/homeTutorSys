@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from django.db.models import Q 
+from django.db.models import exclude
 from django.utils import timezone
 
 from .models import Users,TeacherInfos,StudentInfos,Notices,Messages,TeacherCourse,StudentCourses,Courseflow,BookCourseflow,Charge,Recruit
@@ -51,11 +52,12 @@ def login(request):#入口页
                 request.session["username"] = user.name
                 notice_list = Notices.objects.all().order_by('-time')
                 if user.usertype==0:
-                    teacherinfo_list = TeacherInfos.objects.all()
+                    teacherinfo_list = TeacherInfos.objects.all().order_by('-mark')
                     context = {'teacherinfo_list': teacherinfo_list,'notice_list': notice_list}
                     response=render(request, 'homepage.html',context)
                 elif user.usertype==1:
-                    print("11111111111111111111111111111111")
+                    studentinfo_list = StudentInfos.objects.all().order_by('-id')
+                    context = {'studentinfo_list': studentinfo_list,'notice_list': notice_list}
                     response=render(request, 'homepage_t.html',context)
                 elif user.usertype==2:
                     print("222222222222222222222222222222222222")
@@ -234,9 +236,9 @@ def mgcourse(request):#
     notice_list = Notices.objects.all().order_by('-time')
     if user.usertype==1:#老师只管理自己的课程
         teacher=TeacherInfos.objects.get(teacher=user)
-        design_list=Designs.objects.filter(teacher=teacher)
-        context = {'design_list': design_list}
-        return render(request, 'mgcourse.html',context)
+        course_list=TeacherCourse.objects.filter(teacher=teacher)
+        context = {'notice_list': notice_list,'teachercourse_list': course_list}
+        return render(request, 'mgcourse_t.html',context)
     elif user.usertype==2:#管理员管理所有的课程
         course_list=TeacherCourse.objects.all().order_by('-id')
         context = {'notice_list': notice_list,'teachercourse_list': course_list}
@@ -368,7 +370,29 @@ def addcourse(request):#添加课题
                 teachercourse.teacher.add(teacher)
             teachercourse.save()
             return HttpResponseRedirect(reverse('mgcourse'))#重定向到选题管理页面
-    return render(request, 'addcourse.html',context)
+    if user.usertype==1:
+        teacher=TeacherInfos.objects.get(teacher=user)
+        # hascourse_list=teacher.teachercourse_set.all()
+        teachercourse_list = TeacherCourse.objects.exclude('teacher__contains'=teacher)
+        context = {'teachercourse_list':teachercourse_list,'notice_list': notice_list}
+        return render(request, 'addcourse_t.html',context)
+    elif user.usertype==2:
+        return render(request, 'addcourse_a.html',context)
+
+def addteacher2course(request,course_id):
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    user = Users.objects.get(name = cook)
+    course=TeacherCourse.objects.get(id=course_id)
+    if user.usertype==1:
+        teacher=TeacherInfos.objects.get(teacher=user)
+        course.teacher.add(teacher)
+        course.save()
+        messages.add_message(request,messages.ERROR,'已添加，可在课程管理-我的可授课程 中查看')
+    return HttpResponseRedirect(reverse('addcourse'))#重定向到选题管理页面
+
 
 def reviewcourse(request):#管理员审核老师提交的课程
     cook = request.COOKIES.get("username")
@@ -554,9 +578,18 @@ def mgmessage(request):#留言管理
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    messages1=Messages.objects.filter(reply='')
-    messages2=Messages.objects.filter(~Q(reply=''))
-    context = {'message_list1':messages1,'message_list2':messages2}
+    user = Users.objects.get(name = cook)
+    if user.usertype==0:
+        return render(request, 'studentcoursedetail.html',context)
+    elif user.usertype==1:
+        teacherinfo=TeacherInfos.objects.get(teacher=user)
+        messages1=Messages.objects.filter(Q(reply='')&Q(teacher=teacherinfo))
+        messages2=Messages.objects.filter(~Q(reply='')&Q(teacher=teacherinfo))
+        notice_list = Notices.objects.all().order_by('-time')
+        context = {'message_list1':messages1,'message_list2':messages2,'notice_list':notice_list}
+        return render(request, 'mgmessage_t.html',context)
+    elif user.usertype==2:
+        return render(request, 'studentcoursedetail_a.html',context)
     return render(request, 'mgmessage.html',context)
 
 def processmsg(request,message_id):#删除或回复留言

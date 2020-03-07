@@ -7,31 +7,49 @@
 {% block topmenucenter %}
     <div style="padding:20px">
         <a id =selectedlink href="{% url 'home' %}">首页</a>
-        <a id =link href="{% url 'reviewcourse' %}">选题审核</a>
-        <a id =link href="{% url 'mgcourse' %}">选题管理</a>
+        <a id =link href="{% url 'mgmessage' %}">留言管理</a>
+        <a id =link href="{% url 'mgcourse' %}">课程管理</a>
     </div>
 {% endblock %}
 
 {% block contentbody %}
-    <div style="margin: 0% 10% 0% 10%">
-        <div style="width:100%">
-            <table style="margin: 0% 0% 0% 0%;width:100%">
-                <tr><td style="float:left;font-weight: bold">消息公告<td></tr>
-                {% for notice in notice_list.all %}
-                    <tr>
-                        <td style="float:left">{{ notice.text }}</td>
-                        <td style="width:300px; height:30px;float:right">{{ notice.time }}</td>
+    <div style="margin: 5% 5% 5% 5%">
+        <div style="width:90%;font-size:16px">
+                <h3>学员库</h3>
+                 <table align="center" style="table-layer:fixed"  border="0" cellpadding="0" cellspacing="0" style="border:1px solid #000000;font-size:15px">
+                    <tr align="left">
+                        <td width=10% style="border:1px solid #000000;">账户</td>
+                        <td width=10% style="border:1px solid #000000;">姓名</td>
+                        <td width=8% style="border:1px solid #000000;"> 性别</td>
+                        <td width=8% style="border:1px solid #000000;">年级</td>
+                        <td width=12% style="border:1px solid #000000;">电话</td>
+                        <td width=12% style="border:1px solid #000000;">邮箱</td>
+                        <td width=20% style="border:1px solid #000000;">地址</td>
+                        <td width=10% style="border:1px solid #000000;">历史预约</td>
+                        <td width=10% style="border:1px solid #000000;">ta的需求</td>
                     </tr>
-                    <tr height="32px"></tr>
-                {% endfor %}
-            </table>
+                     {% for studentinfo in studentinfo_list.all %}
+                        <tr align="left">
+                            <td style="border:1px solid #000000;">{{studentinfo.student.name}}</td>
+                            <td style="border:1px solid #000000;">{{studentinfo.student.fullname}}</td>
+                            <td style="border:1px solid #000000;">{{studentinfo.student.gender}}</td>
+                            <td style="border:1px solid #000000;">{{studentinfo.grade}}</td>
+                            <td style="border:1px solid #000000;">{{studentinfo.student.phone}}</td>
+                            <td style="border:1px solid #000000;">{{studentinfo.student.email}}</td>
+                            <td style="border:1px solid #000000;">{{studentinfo.student.address}}</td>
+                            <td style="border:1px solid #000000;">
+                                {% for teachercourse in studentinfo.teachercourse_set.all %}
+                                    <a  href="{% url 'teachercoursedetail' teachercourse.id %}">&nbsp&nbsp{{ teachercourse.name}}</a>
+                                {% endfor %}
+                            </td>
+                            <td style="border:1px solid #000000;">
+                            {% for studentcourse in studentinfo.studentcourses_set.all %}
+                                <a  href="{% url 'studentcoursedetail' studentcourse.id %}" >&nbsp&nbsp{{ studentcourse.name}}</a>
+                            {% endfor %}
+                            </td >
+                        </tr>
+                    {% endfor %}
+                </table>
         </div>
-        <br/>
-        <!-- <div  style="width:100%">
-            <tr>
-                <td><textarea id="id_introduce" placeholder="欢迎留言" name="addmessage"   style="width:100%; height:100px"></textarea></td>
-                <td><input type="submit" value="提交留言" style="width:120px; height:30px;float:right" ></td>
-            </tr>
-        </div> -->
 	</div>
 {% endblock %}

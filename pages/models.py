@@ -38,6 +38,9 @@ class StudentCourses(models.Model):#学生发布的所需课程
     subject = models.CharField(max_length=200,default=u"英语")
     demand = models.CharField(max_length=500,default="")
     time = models.DateTimeField(auto_now=True)
+    email = models.EmailField(default='')#联系邮箱
+    phone=models.CharField(max_length=50,default='')#联系电话
+    address=models.CharField(max_length=200,default='')#上课地址
 
 class Notices(models.Model):#新闻公告
     title = models.CharField(max_length=30,default=u"新闻公告")

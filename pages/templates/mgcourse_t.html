@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block head %}  
+<br/>
+{% endblock %}
+
+{% block style %}
+<style>
+    #pcontent{
+        font-size:28px;
+        color:black;
+    }
+</style>
+{% endblock %}
+
+{% block topmenucenter %}
+    <div style="padding:20px">
+        <a id =link href="{% url 'home' %}">首页</a>
+        <a id =link href="{% url 'mgmessage' %}">留言管理</a>
+        <a id =selectedlink href="{% url 'mgcourse' %}">课程管理</a>
+    </div>
+{% endblock %}
+
+{% block contentbody %}
+      <div  id="textcontent" style="margin: 5% 5% 5% 5%">
+        <div>
+           <a align="left" style="color:blue" href="{% url 'addcourse' %}">添加可授课程</a>
+        </div>
+        <div style="width:90%; height:500px">
+                <h3>我的可授课程</h3>
+                <table align="center" style="table-layer:fixed"  border="0" cellpadding="0" cellspacing="0" style="border:1px solid #000000;">
+                    <tr align="left">
+                        <td width=20% style="border:1px solid #000000;">名称</td>
+                        <td width=15% style="border:1px solid #000000;">年级</td>
+                        <td width=15% style="border:1px solid #000000;">科目</td>
+                        <td width=35% style="border:1px solid #000000;">课程简介</td>
+                        <td width=15% style="border:1px solid #000000;">管理</td>
+                    </tr>
+                     {% for teachercourse in teachercourse_list.all %}
+                        <tr align="left">
+                            <td style="border:1px solid #000000;">{{teachercourse.name}}</td>
+                            <td style="border:1px solid #000000;">{{teachercourse.grade}}</td>
+                            <td style="border:1px solid #000000;">{{teachercourse.subject}}</td>
+                            <td style="border:1px solid #000000;">{{teachercourse.introduce}}</td>
+                            <td style="border:1px solid #000000;">
+                                <a href="{% url 'delcourse' teachercourse.id %}">删除</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+        </div>
+	</div>
+{% endblock %}

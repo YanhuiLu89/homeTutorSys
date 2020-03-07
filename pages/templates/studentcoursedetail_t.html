@@ -15,24 +15,39 @@
 
 {% block topmenucenter %}
     <div style="padding:20px">
-        <a id =link href="{% url 'home' %}">首页</a>
-        <a id =link href="{% url 'selectdesign' %}">选择课题</a>
-        <a id =link  href="{% url 'definedesign' %}">自拟课题</a> 
+        <a id =selectedlink href="{% url 'home' %}">首页</a>
+        <a id =link href="{% url 'mgmessage' %}">留言管理</a>
+        <a id =link href="{% url 'mgcourse' %}">课程管理</a>
     </div>
 {% endblock %}
 
 {% block contentbody %}
     <div style="text-align:center;margin: 10% 10% 10% 10%" >
         <h4>课题详情</h4>
-        <h4>{{ design.subject}}</h4>
-        <p align="left" id=pcontent>
-            <tr>
-                <td>&nbsp&nbsp分类：</td>
-                <td>{{ design.type}}</td>
-                <td>&nbsp&nbsp导师：</td>
-                <td>{{ design.teacher.teacher_name}}</td>
-            </tr>
-        </p>
-        <p align="left" id=pcontent><lable>简介:</label> {{ design.introduce}}</p>
+             <table align="left" >
+                 <tr>
+                    <td align="left">课程名称：{{studentcourse.name}}</td>
+                </tr>
+               <tr>
+                    <td align="left">年级：{{studentcourse.grade}}</td>
+                </tr>
+                    <td align="left">科目：{{studentcourse.subject}}</td>
+                </tr>
+                </tr>
+                    <td align="left">上课地址：</td>{{studentcourse.address}}</td>
+                </tr>
+                </tr>
+                    <td align="left">邮箱：{{studentcourse.email}}</td>
+                </tr>
+                </tr>
+                    <td align="left">电话：{{studentcourse.phone}}</td>
+                </tr>
+                <tr>
+                    <td align="left">要求：{{studentcourse.demand}}</td>
+                </tr>
+                <tr>
+                    <td align="left">发布时间：{{studentcourse.time}}</td>
+                </tr>
+        </table>  
     </div>
 {% endblock %}
