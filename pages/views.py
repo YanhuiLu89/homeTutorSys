@@ -4,7 +4,6 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from django.db.models import Q 
-from django.db.models import exclude
 from django.utils import timezone
 
 from .models import Users,TeacherInfos,StudentInfos,Notices,Messages,TeacherCourse,StudentCourses,Courseflow,BookCourseflow,Charge,Recruit
@@ -362,18 +361,19 @@ def addcourse(request):#添加课题
             messages.add_message(request,messages.ERROR,'该课课程已经存在')
             if user.usertype==1:
                 messages.add_message(request,messages.ERROR,'请直接在已有课程中选择')
-            return render(request, 'addcourse.html')
+            return HttpResponseRedirect(reverse('addcourse'))
         else:
             teachercourse = TeacherCourse(name=temp_name,grade=temp_grade,subject=temp_subject,introduce=temp_introduce)
+            teachercourse.save()
             if user.usertype==1:
                 teacher=TeacherInfos.objects.get(teacher=user)
                 teachercourse.teacher.add(teacher)
-            teachercourse.save()
+                courseflow=Courseflow(course=teachercourse,state=0,teacher=teacher,time=timezone.now())
             return HttpResponseRedirect(reverse('mgcourse'))#重定向到选题管理页面
     if user.usertype==1:
         teacher=TeacherInfos.objects.get(teacher=user)
-        # hascourse_list=teacher.teachercourse_set.all()
-        teachercourse_list = TeacherCourse.objects.exclude('teacher__contains'=teacher)
+        hascourse_list=teacher.teachercourse_set.all().values('id')
+        teachercourse_list = TeacherCourse.objects.exclude(id__in=hascourse_list)
         context = {'teachercourse_list':teachercourse_list,'notice_list': notice_list}
         return render(request, 'addcourse_t.html',context)
     elif user.usertype==2:
@@ -390,8 +390,21 @@ def addteacher2course(request,course_id):
         teacher=TeacherInfos.objects.get(teacher=user)
         course.teacher.add(teacher)
         course.save()
-        messages.add_message(request,messages.ERROR,'已添加，可在课程管理-我的可授课程 中查看')
+        messages.add_message(request,messages.ERROR,'已添加，可在课程管理->我的可授课程 中查看')
     return HttpResponseRedirect(reverse('addcourse'))#重定向到选题管理页面
+
+def rvteacherfromcourse(request,course_id):
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    user = Users.objects.get(name = cook)
+    course=TeacherCourse.objects.get(id=course_id)
+    if user.usertype==1:
+        teacher=TeacherInfos.objects.get(teacher=user)
+        course.teacher.remove(teacher)
+        course.save()
+    return HttpResponseRedirect(reverse('mgcourse'))#重定向到选题管理页面
 
 
 def reviewcourse(request):#管理员审核老师提交的课程

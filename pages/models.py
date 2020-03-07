@@ -70,6 +70,7 @@ class Courseflow(models.Model):#老师提交课程审批流程
     state = models.IntegerField(default=0)#0-提交 1-通过 2-打回
     updatetime = models.DateTimeField(auto_now=True)#
     teacher = models.ForeignKey(TeacherInfos,default=None,on_delete=models.CASCADE)#标志哪个老师提交的课程
+    time = models.DateTimeField(auto_now=True)
 
 class BookCourseflow(models.Model):#预约老师
     student = models.OneToOneField(StudentInfos, on_delete=models.CASCADE)

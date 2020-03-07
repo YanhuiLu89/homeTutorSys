@@ -40,6 +40,7 @@ urlpatterns = [
     path('delcourse/<course_id>', views.delcourse, name='delcourse'),
     path('editcourse/<course_id>', views.editcourse, name='editcourse'),
     path('addteacher2course/<course_id>', views.addteacher2course, name='addteacher2course'),
+    path('rvteacherfromcourse/<course_id>', views.rvteacherfromcourse, name='rvteacherfromcourse'),
     #path('submitdesign/', views.submitdesign, name='submitdesign'),
     path('definedesign/', views.definedesign, name='definedesign'),
 
