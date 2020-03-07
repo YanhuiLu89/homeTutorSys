@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.db.models import Q 
 from django.utils import timezone
 
-from .models import Users,TeacherInfos,StudentInfos,Notices,Messages,TeacherCourse,StudentCourses,Courseflow,BookCourseflow
+from .models import Users,TeacherInfos,StudentInfos,Notices,Messages,TeacherCourse,StudentCourses,Courseflow,BookCourseflow,Charge,Recruit
 # Create your views here.
 ###############################公共view##################################################
 def index(request):#入口页
@@ -242,23 +242,72 @@ def mgcourse(request):#
         context = {'notice_list': notice_list,'teachercourse_list': course_list}
         return render(request, 'mgcourse_a.html',context)
 
-def mgcost(request):#
+def mgcharge(request):#
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
     user = Users.objects.get(name = cook)
-    if user.usertype==1:#老师只管理自己的课程
-        teacher=TeacherInfos.objects.get(teacher=user)
-        design_list=Designs.objects.filter(teacher=teacher)
-        context = {'design_list': design_list}
-        return render(request, 'mgcost.html',context)
-    elif user.usertype==2:#管理员管理所有的课程
-        teacher_list=TeacherInfos.objects.all()
-        design_list=Designs.objects.all()
-        context = {'design_list': design_list,'teacher_list':teacher_list}
-        print('好困好困:',len(teacher_list))
-        return render(request, 'mgcost_a.html',context)
+    chargelist=Charge.objects.all()
+    notice_list = Notices.objects.all().order_by('-time')
+    context = {'notice_list': notice_list,'charge_list':chargelist}
+    return render(request, 'mgcharge.html',context)
+
+def addcharge(request):#添加资费
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    user = Users.objects.get(name = cook)
+    notice_list = Notices.objects.all().order_by('-time')
+    context = {'notice_list': notice_list}
+    if  request.method == 'POST':
+        temp_subject = request.POST['subject']
+        temp_name = request.POST['name']
+        temp_teachertype= request.POST['teachertype']
+        temp_grade = request.POST['grade']
+        temp_fee = request.POST['fee']
+        if Charge.objects.filter(Q(subject=temp_subject)&Q(grade=temp_grade)&Q(name=temp_name)).exists():
+            messages.add_message(request,messages.ERROR,'该资费已经存在')
+            return render(request, 'addcharge.html')
+        else:
+            charge = Charge(name=temp_name,grade=temp_grade,subject=temp_subject,teachertype=temp_teachertype,fee=temp_fee)
+            charge.save()
+            return HttpResponseRedirect(reverse('mgcharge'))#重定向到选题管理页面
+    return render(request, 'addcharge.html',context)
+
+def editcharge(request,charge_id):#点击编辑链接跳转到编辑页面
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    tempid=charge_id
+    charge=Charge.objects.get(id=tempid)
+    if request.method == 'POST':
+        temp_subject = request.POST['subject']
+        temp_grade = request.POST['grade']
+        temp_name = request.POST['name']
+        temp_teachertype = request.POST['teachertype']
+        temp_fee = request.POST['fee']
+        charge.name=temp_name
+        charge.grade=temp_grade
+        charge.subject=temp_subject
+        charge.teachertype=temp_teachertype
+        charge.fee=temp_fee
+        charge.save()
+        return HttpResponseRedirect(reverse('mgchrge'))#重定向到选题管理页面
+    notice_list = Notices.objects.all().order_by('-time')
+    context = {'course': charge,'notice_list': notice_list}
+    return render(request, 'editcharge.html', context)
+
+def delcharge(request,charge_id):#删除课题
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    tempid = charge_id
+    Charge.objects.filter(id=tempid).delete()
+    return HttpResponseRedirect(reverse('mgcharge'))#重定向到选题管理页面
 
 def mgrecruit(request):#
     cook = request.COOKIES.get("username")
@@ -266,9 +315,33 @@ def mgrecruit(request):#
     if cook == None:
         return  render(request, 'index.html')
     user = Users.objects.get(name = cook)
-    recruit_list=Recruit.objects.all()
-    context = {'recruit_list': recruit_list}
+    recruit_list=Recruit.objects.all().order_by('-updatetime')
+    notice_list = Notices.objects.all().order_by('-time')
+    context = {'recruit_list': recruit_list,'notice_list': notice_list}
     return render(request, 'mgrecruit.html',context)
+
+def addrecruit(request):#
+    print("mgrecruit in")
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        print("cook == None")
+        return  render(request, 'index.html')
+    if request.method == 'POST':
+        print("request.method == 'POST'")
+        temp_name=request.POST['name']
+        temp_minage=request.POST['minage']
+        temp_maxage=request.POST['maxage']
+        temp_wage=request.POST['wage']
+        temp_education=request.POST['education']
+        temp_description=request.POST['description']
+        temp_phone=request.POST['phone']
+        temp_email=request.POST['email']
+        recruit=Recruit(name=temp_name,minage=temp_minage,maxage=temp_maxage,wage=temp_wage,\
+            education=temp_education,description=temp_description,email=temp_email,phone=temp_phone,updatetime=timezone.now())
+        recruit.save()
+        messages.add_message(request,messages.INFO,'招聘信息已发布')
+    return HttpResponseRedirect(reverse('mgrecruit'))
     
 def addcourse(request):#添加课题
     cook = request.COOKIES.get("username")
@@ -297,21 +370,18 @@ def addcourse(request):#添加课题
             return HttpResponseRedirect(reverse('mgcourse'))#重定向到选题管理页面
     return render(request, 'addcourse.html',context)
 
-def reviewdesign(request):#
-    cook = request.COOKIES.get("username")#审核课题
+def reviewcourse(request):#管理员审核老师提交的课程
+    cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
     user = Users.objects.get(name = cook)
-    if user.usertype==1:#老师审核选题和自拟题
-        works1=Workflow.objects.filter(Q(currentuser=user.name)&Q(nextaction=u'待老师审核')&Q(isselfdesign=False))
-        works2=Workflow.objects.filter(Q(currentuser=user.name)&Q(nextaction=u'待老师审核')&Q(isselfdesign=True))
-        context = {'work_list1':works1,'work_list2':works2}
-        return render(request, 'reviewdesign.html',context)
-    elif user.usertype==2:#老师审核自拟题目
-        works=Workflow.objects.filter(Q(nextaction=u'待管理员审核')&Q(isselfdesign=True))
-        context = {'work_list':works}
-        return render(request, 'reviewdesign_a.html',context)
+    notice_list = Notices.objects.all().order_by('-time')
+    courseflow_list1=Courseflow.objects.filter(state=0)
+    courseflow_list2=Courseflow.objects.filter(state=1)
+    courseflow_list3=Courseflow.objects.filter(state=2)
+    context = {'courseflow_list1':courseflow_list1,'courseflow_list2':courseflow_list2,'courseflow_list3':courseflow_list3,'notice_list': notice_list}
+    return render(request, 'reviewcourse_a.html',context)
 
 def reviewclick(request,workflow_id):
     cook = request.COOKIES.get("username")#审核课题
@@ -348,7 +418,7 @@ def reviewclick(request,workflow_id):
             selfdesig.state=2
             selfdesig.save()
     work.save()
-    return HttpResponseRedirect(reverse('reviewdesign'))
+    return HttpResponseRedirect(reverse('reviewcourse'))
     
 def reviewselfdesign(request,selfdesign_id):
     cook = request.COOKIES.get("username")#审核课题
@@ -364,7 +434,7 @@ def reviewselfdesign(request,selfdesign_id):
         elif 'back' in request.POST:
             work.state='打回'
     work.save()
-    return HttpResponseRedirect(reverse('reviewdesign'))
+    return HttpResponseRedirect(reverse('reviewcourse'))
 
 def editcourse(request,course_id):#点击编辑链接跳转到编辑页面
     cook = request.COOKIES.get("username")
@@ -444,8 +514,9 @@ def mgteacher(request):#
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    teacher_list = TeacherInfos.objects.all()
-    context = {'teacher_list': teacher_list}
+    teacherinfo_list = TeacherInfos.objects.all()
+    notice_list = Notices.objects.all().order_by('-time')
+    context = {'notice_list': notice_list,'teacherinfo_list': teacherinfo_list}
     return render(request, 'mgteacher.html',context)
 
 def addteacher(request):#
@@ -475,7 +546,7 @@ def delteacher(request,user_id):#
     if cook == None:
         return  render(request, 'index.html')
     tempid = user_id
-    Users.objects.filter(name=tempid).delete()
+    Users.objects.filter(id=tempid).delete()
     return HttpResponseRedirect(reverse('mgteacher'))#重定向到老师管理页面
 
 def mgmessage(request):#留言管理

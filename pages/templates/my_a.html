@@ -7,8 +7,8 @@
 {% block topmenucenter %}
     <div style="padding:20px">
         <a id =link href="{% url 'home' %}">首页</a>
-        <a id =link href="{% url 'reviewdesign' %}">选题审核</a>
-        <a id =link  href="{% url 'mgdesign' %}">选题管理</a> 
+        <a id =link href="{% url 'reviewcourse' %}">选题审核</a>
+        <a id =link  href="{% url 'mgcourse' %}">选题管理</a> 
         <a id =link  href="{% url 'mgstudent' %}">学生管理</a> 
         <a id =link  href="{% url 'mgteacher' %}">老师管理</a> 
         <a id =link  href="{% url 'mgmessage' %}">留言管理</a> 
@@ -37,7 +37,7 @@
         <div  style="width:100%; height:600px">
             <h4>我的任务</h4>
             <div>
-                 <h5>待审核({{list1count }}条),<a  href="{% url 'reviewdesign' %}">可去选题审核处理</a></h4>
+                 <h5>待审核({{list1count }}条),<a  href="{% url 'reviewcourse' %}">可去选题审核处理</a></h4>
                     {% for work in work_list1.all %}
                     <p align="left">
                         课题:<a  href="{% url 'designdetail' work.subject %}">{{work.subject}}</a>

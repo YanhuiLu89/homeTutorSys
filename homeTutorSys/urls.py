@@ -30,11 +30,12 @@ urlpatterns = [
     path('designdetail/<subject>', views.designdetail, name='designdetail'),
     path('editmyinfo/', views.editmyinfo, name='editmyinfo'),
 
-    path('reviewdesign/', views.reviewdesign, name='reviewdesign'),
+    path('reviewcourse/', views.reviewcourse, name='reviewcourse'),
     path('reviewclick/<workflow_id>', views.reviewclick, name='reviewclick'),
     path('mgcourse/', views.mgcourse, name='mgcourse'),
-    path('mgcost/', views.mgcost, name='mgcost'),
+    path('mgcharge/', views.mgcharge, name='mgcharge'),
     path('mgrecruit/', views.mgrecruit, name='mgrecruit'),
+    path('addrecruit/', views.addrecruit, name='addrecruit'),
     path('addcourse/', views.addcourse, name='addcourse'),
     path('delcourse/<course_id>', views.delcourse, name='delcourse'),
     path('editcourse/<course_id>', views.editcourse, name='editcourse'),
@@ -63,5 +64,8 @@ urlpatterns = [
     path('publicneed/', views.publicneed, name='publicneed'),
     path('bookteacher/<teacher_id>', views.bookteacher, name='bookteacher'),
     path('studentcoursedetail/<stcourse_id>', views.studentcoursedetail, name='studentcoursedetail'),
+    path('editcharge/<charge_id>', views.editcharge, name='editcharge'),
+    path('delcharge/<charge_id>', views.delcharge, name='delcharge'),
     path('teacherdetail/<teacher_id>', views.teacherdetail, name='teacherdetail'),
+    path('addcharge', views.addcharge, name='addcharge'),
 ]

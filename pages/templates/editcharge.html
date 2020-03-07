@@ -7,9 +7,9 @@
 {% block topmenucenter %}
     <div style="padding:20px">
         <a id =link href="{% url 'home' %}">首页</a>
-        <a id =selectedlink  href="{% url 'mgcourse' %}">课程管理</a> 
+        <a id =link  href="{% url 'mgcourse' %}">课程管理</a> 
         <a id =link  href="{% url 'mgstudent' %}">学生管理</a> 
-        <a id =link  href="{% url 'mgteacher' %}">老师管理</a> 
+        <a id =selectedlink  href="{% url 'mgteacher' %}">老师管理</a> 
         <a id =link  href="{% url 'mgcharge' %}">资费管理</a>
         <a id =link  href="{% url 'mgmessage' %}">留言管理</a> 
         <a id =link  href="{% url 'mgrecruit' %}">招聘管理</a>
@@ -17,19 +17,19 @@
 {% endblock %}
 
 {% block contentbody %}
-<div style="width:90%;margin:5% auto">
-        <h4>课程管理>添加新课程<h4>
-        <form enctype='multipart/form-data' action="{% url 'addcourse' %}" method="post" name='addcourse' >{% csrf_token %}
+<div style="width:100%;margin:5% auto">
+        <h4>资费管理>编辑资费<h4>
+        <form enctype='multipart/form-data' action="{% url 'editcharge' course.id%}" method="post" name='editcharge' >{% csrf_token %}
             <table align="center" >
                 <tr>
-                    <td style="width:10%">课程名称</td>
-                    <td style="width:90%"><input type="text" id="id_name" name="name" placeholder="请输入课程名称，如""高三数学"",""芭蕾舞""等" style="width:100%; height:60px" autofocus required  /></td>
+                    <td style="width:40%">资费名称</td>
+                    <td style="width:60%"><input type="text" id="id_name" name="name" value={{charge.name}} style="width:100%; height:60px" autofocus required  /></td>
                 </tr>
                 <tr>
                     <td>年级</td>
-                    <td style="width: 50%;height:60px">
-                        <select id="高三"  name="grade" panelHeight="auto" style="width: 100%;height:30px;float:left">
-                        <option value=高三>高三</option>
+                    <td style="width: 60%;height:60px">
+                        <select id="grade"  name="grade" panelHeight="auto" style="width: 100%;height:30px;float:left">
+                        <option value=高三 >高三</option>
                         <option value=高二>高二</option>
                         <option value=高一>高一</option>
                         <option value=初三>初三</option>
@@ -41,10 +41,10 @@
                         </select> 
                     </td>
                 </tr>
-                    <tr>
+                <tr>
                     <td>科目</td>
-                    <td style="width: 50%;height:60px">
-                        <select id="数学"  name="subject" panelHeight="auto" style="width: 100%;height:30px;float:left">
+                    <td style="width: 60%;height:60px">
+                        <select id="subject"  name="subject" panelHeight="auto" style="width: 100%;height:30px;float:left">
                         <option value=数学>数学</option>
                         <option value=英语>英语</option>
                         <option value=语文>语文</option>
@@ -58,12 +58,24 @@
                     </td>
                 </tr>
                 <tr>
-                        <td>简介</td>
-                        <td><textarea id="id_introduce" placeholder="请输入简介" name="introduce"   style="width:100%; height:300px"></textarea></td>
+                    <td>授课老师身份</td>
+                    <td style="width: 60%;height:60px">
+                        <select id="subject"  name="subject" panelHeight="auto" style="width: 100%;height:30px;float:left">
+                        <option value=大学生>大学生</option>
+                        <option value=非在职教师>非在职教师</option>
+                        <option value=在职教师>在职教师</option>
+                        <option value=外教>外教</option>
+                        <option value=其他>其他</option>
+                        </select> 
+                    </td>
+                </tr>
+                <tr>
+                        <td>费用</td>
+                        <td><input type='number' id="id_introduce"  name="introduce"  style="width:100%; height:300px">{{ charge.fee}}</input></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td><input type="submit" value="确认添加" style="width:120px; height:30px;float:right" ></td>
+                    <td><input type="submit" value="确认修改" style="width:120px; height:30px;float:right" ></td>
                 </tr>
         </table>     
     </form>

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block head %}  
+<br/>
+{% endblock %}
+
+{% block topmenucenter %}
+    <div style="padding:20px">
+        <a id =link href="{% url 'home' %}">首页</a>
+        <a id =selectedlink  href="{% url 'mgcourse' %}">课程管理</a> 
+        <a id =link  href="{% url 'mgstudent' %}">学生管理</a> 
+        <a id =link  href="{% url 'mgteacher' %}">老师管理</a> 
+        <a id =link  href="{% url 'mgcharge' %}">资费管理</a>
+        <a id =link  href="{% url 'mgmessage' %}">留言管理</a> 
+        <a id =link  href="{% url 'mgrecruit' %}">招聘管理</a> 
+    </div>
+{% endblock %}
+
+{% block contentbody %}
+    <div  style="width:100%;margin:5% 5% 5% 5%">
+        <div>
+            <h3>待审核课程</h3>
+            <table align="center" style="table-layer:fixed"  border="0" cellpadding="0" cellspacing="0" style="border:1px solid #000000;">
+                <tr align="left">
+                    <td width=20% style="border:1px solid #000000;">名称</td>
+                    <td width=10% style="border:1px solid #000000;">年级</td>
+                    <td width=10% style="border:1px solid #000000;">科目</td>
+                    <td width=30% style="border:1px solid #000000;">课程简介</td>
+                    <td width=20% style="border:1px solid #000000;">提交老师</td>
+                    <td width=10% style="border:1px solid #000000;">管理</td>
+                </tr>
+                    {% for courseflow in courseflow_list1.all %}
+                    <tr align="left">
+                        <td style="border:1px solid #000000;">{{courseflow.course.name}}</td>
+                        <td style="border:1px solid #000000;">{{courseflow.course.grade}}</td>
+                        <td style="border:1px solid #000000;">{{courseflow.course.subject}}</td>
+                        <td style="border:1px solid #000000;">{{courseflow.course.introduce}}</td>
+                        <td style="border:1px solid #000000;">
+                            <a  href="{% url 'teacherdetail' courseflow.teacher.id %}">{{courseflow.teacher.name}}</a>
+                        </td>
+                        <td style="border:1px solid #000000;">
+                            <input type="submit" value="通过"  style="width:200px; height:32px;float:center" name="pass">
+                            <input type="submit" value="打回"  style="width:200px; height:32px;float:center" name="back">
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <h3>已通过课程</h2>
+            <table align="center" style="table-layer:fixed"  border="0" cellpadding="0" cellspacing="0" style="border:1px solid #000000;">
+                <tr align="left">
+                    <td width=20% style="border:1px solid #000000;">名称</td>
+                    <td width=10% style="border:1px solid #000000;">年级</td>
+                    <td width=10% style="border:1px solid #000000;">科目</td>
+                    <td width=30% style="border:1px solid #000000;">课程简介</td>
+                    <td width=20% style="border:1px solid #000000;">提交老师</td>
+                    <td width=10% style="border:1px solid #000000;">状态</td>
+                </tr>
+                    {% for courseflow in courseflow_list2.all %}
+                    <tr align="left">
+                        <td style="border:1px solid #000000;">{{courseflow.course.name}}</td>
+                        <td style="border:1px solid #000000;">{{courseflow.course.grade}}</td>
+                        <td style="border:1px solid #000000;">{{courseflow.course.subject}}</td>
+                        <td style="border:1px solid #000000;">{{courseflow.course.introduce}}</td>
+                        <td style="border:1px solid #000000;">
+                            <a  href="{% url 'teacherdetail' courseflow.teacher.id %}">{{courseflow.teacher.name}}</a>
+                        </td>
+                        <td style="border:1px solid #000000;">已通过</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <h3>已打回课程</h2>
+            <table align="center" style="table-layer:fixed"  border="0" cellpadding="0" cellspacing="0" style="border:1px solid #000000;">
+                <tr align="left">
+                    <td width=20% style="border:1px solid #000000;">名称</td>
+                    <td width=10% style="border:1px solid #000000;">年级</td>
+                    <td width=10% style="border:1px solid #000000;">科目</td>
+                    <td width=30% style="border:1px solid #000000;">课程简介</td>
+                    <td width=20% style="border:1px solid #000000;">提交老师</td>
+                    <td width=10% style="border:1px solid #000000;">状态</td>
+                </tr>
+                    {% for courseflow in courseflow_list2.all %}
+                    <tr align="left">
+                        <td style="border:1px solid #000000;">{{courseflow.course.name}}</td>
+                        <td style="border:1px solid #000000;">{{courseflow.course.grade}}</td>
+                        <td style="border:1px solid #000000;">{{courseflow.course.subject}}</td>
+                        <td style="border:1px solid #000000;">{{courseflow.course.introduce}}</td>
+                        <td style="border:1px solid #000000;">
+                            <a  href="{% url 'teacherdetail' courseflow.teacher.id %}">{{courseflow.teacher.name}}</a>
+                        </td>
+                        <td style="border:1px solid #000000;">已打回</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}

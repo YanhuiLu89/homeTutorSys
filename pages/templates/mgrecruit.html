@@ -16,62 +16,96 @@
 {% block topmenucenter %}
     <div style="padding:20px">
         <a id =link href="{% url 'home' %}">首页</a>
-        <a id =link href="{% url 'reviewdesign' %}">选题审核</a>
-        <a id =link  href="{% url 'mgdesign' %}">选题统计</a> 
+        <a id =link  href="{% url 'mgcourse' %}">课程管理</a> 
         <a id =link  href="{% url 'mgstudent' %}">学生管理</a> 
         <a id =link  href="{% url 'mgteacher' %}">老师管理</a> 
+        <a id =link  href="{% url 'mgcharge' %}">资费管理</a>
         <a id =link  href="{% url 'mgmessage' %}">留言管理</a> 
+        <a id =selectedlink  href="{% url 'mgrecruit' %}">招聘管理</a> 
     </div>
 {% endblock %}
 
 {% block contentbody %}
-<div style="margin: 5% 20%" >
-        <form enctype='multipart/form-data' action="{% url 'searchdesign' %}" method="post" name='searchdesign' >{% csrf_token %}
-            <p align="left">
-                <tr>
-                    <td><input type="text" id="search" name="search_content" placeholder="请输入筛选要素" style="width:600px; height:32px"/></td>
-                    <td><input type="submit" name='search' value="统计" style="width:80px; height:35px"></td>
-                </tr>
-            </p>
-            <p align="left">
-                <tr>
-                    <td><font color="gray">导师:</font>
-                        <select name="search_teacher" panelHeight="auto" style="width: 200px;height:32px">
-                            <option value=''></option>
-                            {% for teacher in teacher_list.all %}
-                                <option value='{{teacher.teacher_name}}'>{{teacher.teacher_name}}</option>
-                            {% endfor %}
-                        </select> 
-                    </td>
-                    <td><font color="gray">&nbsp&nbsp分类:</font>
-                        <select name="type" panelHeight="auto" style="width: 200px;height:32px">
-                        <option value=''></option>
-                        <option value=XG >信息管理</option>
-                        <option value=JSJ>计算机</option>
-                        <option value=JR >金融</option>
-                        <option value=GC>工程</option>
-                        <option value=HK>航空</option>
-                        <option value=XT>系统</option>
-                        <option value=YJ>研究</option>
-                        <option value=QT>其他</option>
-                        </select> 
-                    </td>
-                </tr> 
-            </p>
-        </form>
-        {% for design in design_list.all %}
-            <h4>{{ design.subject}}</h4>
-            <p align="left" id=pcontent>
-                <tr>
-                    <td>题目ID:</td>
-                    <td>{{ design.idno}}</td>
-                    <td>&nbsp&nbsp分类：</td>
-                    <td>{{ design.type}}</td>
-                    <td>&nbsp&nbsp导师：</td>
-                    <td>{{ design.teacher.teacher_name}}</td>
-                </tr>
-            </p>
-            <p align="left" id=pcontent><lable>简介:</label> {{ design.introduce}}</p>
-        {% endfor %}
-    </div>
+ <div style="margin: 5% 5% 5% 5%">
+        <div style="width:80%">
+            <h4>发布招聘</h4>
+            <form enctype='multipart/form-data' action="{% url 'addrecruit' %}" method="post" name='addrecruit' >{% csrf_token %}
+                <table>
+                    <tr>
+                        <td width="20%">职位名称：</td>
+                        <td  style="width: 80%;float:left">
+                        `   <input type="text" id="id_name" name="name" placeholder="职位名称，如高三数学辅导老师，芭蕾舞老师等" style="width:100%; height:32px" autofocus required  /></input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">年龄要求：</td>
+                        <td style="float:left">
+                            <input type='number' id="id_minage"  name="minage" style="height:32px" ></input>周岁~
+                            <input type='number' id="id_maxage"  name="maxage" style="height:32px" ></input>周岁
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">工资：</td>
+                        <td style="float:left">
+                            <input type='number' id="id_wage" placeholder="请输入工资" name="wage"   style="height:32px"></input>元/小时
+                        </td>
+                    </tr>
+                        <td width="20%">学历要求：</td>
+                        <td>
+                            <select id="本科"  name="education" panelHeight="auto" style="width: 100%;height:32px;float:left">
+                            <option value=本科>本科</option>
+                            <option value=大专>大专</option>
+                            <option value=研究生>研究生</option>
+                            <option value=博士>博士</option>
+                            <option value=其他>其他</option>
+                            </select> 
+                        </td>
+                    <tr>
+                    </tr>
+                    <tr>
+                        <td width="20%">职位介绍：</td>
+                        <td>
+                            <textarea id="id_description" placeholder="请输入职位要求" name="description" style="width:100%; height:150px" autofocus required></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">招聘邮箱：</td>
+                        <td  style="width: 80%;float:left">
+                        `   <input type="text" id="id_mail" name="email" placeholder="简历接收邮箱" style="width:100%; height:32px" autofocus required  /></input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">招聘热线：</td>
+                        <td  style="width: 80%;float:left">
+                        `   <input type="text" id="id_name" name="phone"  style="width:100%; height:32px" autofocus required  /></input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%"></td>
+                        <td><input type="submit" value="发布"  style="width:100%; height:32px;float:right" ></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div  style="width:80%">
+            <h3>历史招聘</h3>
+            {% for recruit in recruit_list.all %}
+                <h4>{{ recruit.name }}<h4>
+                <p align="left" style="width: 80%;font-size:26px;font-weight: normal">
+                    年龄：{{recruit.minage}}周岁~{{recruit.maxage}}周岁&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp工资：{{recruit.wage}}元/小时
+                    </br>
+                    学历要求：{{recruit.education}}及以上
+                    </br>
+                    邮箱：{{recruit.email}}
+                    </br>
+                    电话：{{recruit.phone}}
+                    </br>
+                    职位介绍：{{ recruit.description }}
+                     </br>
+                    {{ recruit.updatetime }}
+                </p>
+            {% endfor %}
+        </div>
+      
+</div>
 {% endblock %}

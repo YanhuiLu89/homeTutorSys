@@ -21,7 +21,7 @@ class TeacherInfos(models.Model):#老师信息，与user一对一关系
     mark = models.IntegerField(default=0 )#打分0-5
     introduce= models.CharField(max_length=200,default="" )#自我介绍
     fee = models.IntegerField(default=100)#薪水要求每小时
-    education= models.IntegerField(default=0)#0-大专,1-本科，2-研究生，3-硕士
+    education= models.CharField(max_length=40,default=u'本科')
 
 class TeacherCourse(models.Model):#开售的课程
     name=models.CharField(max_length=50)#课程名称
@@ -55,15 +55,18 @@ class Recruit(models.Model):#招聘信息
     name = models.CharField(max_length=30)#职位名称
     minage = models.IntegerField(default=20)#最小年龄要求
     maxage = models.IntegerField(default=65)#最大年前要求
-    wages = models.IntegerField(default=7000)#工资
-    education= models.IntegerField(default=0)#0-大专,1-本科，2-研究生，3-硕士
+    wage = models.IntegerField(default=7000)#工资
+    education= models.CharField(max_length=40,default=u'本科')#0-大专,1-本科，2-研究生，3-硕士
+    email = models.EmailField(default='')#招聘邮箱
+    phone=models.CharField(max_length=50,default='')#招聘热线
     description = models.CharField(max_length=500)
     updatetime = models.DateTimeField(auto_now=True)#
 
 class Courseflow(models.Model):#老师提交课程审批流程
-    course = models.OneToOneField(TeacherCourse, on_delete=models.CASCADE)
+    course = models.ForeignKey(TeacherCourse,default=None, on_delete=models.CASCADE)
     state = models.IntegerField(default=0)#0-提交 1-通过 2-打回
     updatetime = models.DateTimeField(auto_now=True)#
+    teacher = models.ForeignKey(TeacherInfos,default=None,on_delete=models.CASCADE)#标志哪个老师提交的课程
 
 class BookCourseflow(models.Model):#预约老师
     student = models.OneToOneField(StudentInfos, on_delete=models.CASCADE)
@@ -76,3 +79,9 @@ class BookCourseflow(models.Model):#预约老师
     demand = models.CharField(max_length=500,default="")
     updatetime = models.DateTimeField(auto_now=True)#
 
+class Charge(models.Model):
+    name= models.CharField(max_length=40,default="")#课程名称，如高三英语，初一数学，大提琴，吉他
+    grade = models.CharField(max_length=40,default=u"高三")
+    subject = models.CharField(max_length=200,default=u"英语")  
+    fee = models.IntegerField(default=100)#收费
+    teachertype= models.CharField(max_length=10,default=u"大学生")#老师类型 大学生/非在职教师/在职教师/外教/其他
