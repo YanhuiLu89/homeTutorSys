@@ -66,11 +66,12 @@ urlpatterns = [
     path('checkcharge/', views.checkcharge, name='checkcharge'),
     path('publicneed/', views.publicneed, name='publicneed'),
     path('bookteacher/<teacher_id>', views.bookteacher, name='bookteacher'),
-    path('cancelbook/<bookflow_id>', views.cancelbook, name='cancelbook'),
+    path('processbook/<bookflow_id><state>', views.processbook, name='processbook'),
     path('markteacher/<bookflow_id>', views.markteacher, name='markteacher'),
     path('studentcoursedetail/<stcourse_id>', views.studentcoursedetail, name='studentcoursedetail'),
     path('editcharge/<charge_id>', views.editcharge, name='editcharge'),
     path('delcharge/<charge_id>', views.delcharge, name='delcharge'),
     path('teacherdetail/<teacher_id>', views.teacherdetail, name='teacherdetail'),
+    path('studentdetail/<student_id>', views.studentdetail, name='studentdetail'),
     path('addcharge', views.addcharge, name='addcharge'),
 ]

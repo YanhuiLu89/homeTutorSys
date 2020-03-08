@@ -15,30 +15,31 @@
 {% block contentbody %}
     <div id="textcontent" style="margin: 5% 5% 5% 5%">
         <div style="width:90%;font-size:16px">
+                <h3>学员库</h3>
                 <table align="center" style="table-layer:fixed"  border="0" cellpadding="0" cellspacing="0" style="border:1px solid #000000;">
                     <tr align="left">
-                        <td width=10% style="border:1px solid #000000;">账户</td>
-                        <td width=10% style="border:1px solid #000000;">姓名</td>
-                        <td width=8% style="border:1px solid #000000;"> 性别</td>
-                        <td width=8% style="border:1px solid #000000;">年级</td>
+                        <td width=12% style="border:1px solid #000000;">账户</td>
+                        <td width=12% style="border:1px solid #000000;">姓名</td>
+                        <td width=10% style="border:1px solid #000000;">年级</td>
                         <td width=12% style="border:1px solid #000000;">电话</td>
                         <td width=12% style="border:1px solid #000000;">邮箱</td>
                         <td width=20% style="border:1px solid #000000;">地址</td>
                         <td width=10% style="border:1px solid #000000;">历史预约</td>
-                        <td width=10% style="border:1px solid #000000;">ta的需求</td>
+                        <td width=12% style="border:1px solid #000000;">ta的需求</td>
                     </tr>
                      {% for studentinfo in studentinfo_list.all %}
                         <tr align="left">
-                            <td style="border:1px solid #000000;">{{studentinfo.student.name}}</td>
+                            <td style="border:1px solid #000000;">
+                                <a  href="{% url 'studentdetail' studentinfo.id %}">{{studentinfo.student.name}}({{studentinfo.student.gender}})</a>
+                            </td>
                             <td style="border:1px solid #000000;">{{studentinfo.student.fullname}}</td>
-                            <td style="border:1px solid #000000;">{{studentinfo.student.gender}}</td>
                             <td style="border:1px solid #000000;">{{studentinfo.grade}}</td>
                             <td style="border:1px solid #000000;">{{studentinfo.student.phone}}</td>
                             <td style="border:1px solid #000000;">{{studentinfo.student.email}}</td>
                             <td style="border:1px solid #000000;">{{studentinfo.student.address}}</td>
                             <td style="border:1px solid #000000;">
-                                {% for teachercourse in studentinfo.teachercourse_set.all %}
-                                    <a  href="{% url 'teachercoursedetail' teachercourse.id %}">&nbsp&nbsp{{ teachercourse.name}}</a>
+                               {% for bookcourseflow in studentinfo.bookcourseflow_set.all %}
+                                    <a  href="{% url 'teacherdetail' bookcourseflow.teacher.id  %}">&nbsp&nbsp{{ bookcourseflow.teacher.teacher.name}}</a>
                                 {% endfor %}
                             </td>
                             <td style="border:1px solid #000000;">

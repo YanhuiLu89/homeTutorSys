@@ -63,7 +63,7 @@
                         <td style="border:1px solid #000000;"><label name="state" id= "state{{bookcourseflow.state}}"><label></td>
                         <td style="border:1px solid #000000;">{{bookcourseflow.updatetime }} </td>
                         <td style="border:1px solid #000000;">
-                            <a  name="cancel" style="visibility:hidden" href="{% url 'cancelbook' bookcourseflow.id %}">取消预约</a> 
+                            <a  name="cancel" style="visibility:hidden" href="{% url 'processbook' bookcourseflow.id  4%}">取消预约</a> 
                             <a  name="mark" style="visibility:hidden" href="{% url 'markteacher' bookcourseflow.id %}">打分</a> 
                         </td>
                     </tr>

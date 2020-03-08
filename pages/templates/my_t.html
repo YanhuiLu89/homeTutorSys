@@ -51,13 +51,48 @@
                     <td width=30% style="border:1px solid #000000;">状态</td>
                     <td width=30% style="border:1px solid #000000;">时间</td>
                 </tr>
-                    {% for courseflow in courseflow_list.all %}
+                    {% for courseflow in teacherinfo.courseflow_set.all %}
                     <tr align="left">
                         <td style="border:1px solid #000000;">
                             <a  href="{% url 'teachercoursedetail' courseflow.course.id %}">&nbsp&nbsp{{ courseflow.course.name}}</a>
                         </td>
                         <td style="border:1px solid #000000;"><label name="state" id= "state{{ courseflow.state}}"></td>
                         <td style="border:1px solid #000000;">{{courseflow.time}}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div  style="width:80%; ">
+            <h4>被预约</h4>
+             <table align="center" style="table-layer:fixed"  border="0" cellpadding="0" cellspacing="0" style="border:1px solid #000000;">
+                <tr align="left">
+                    <td width=10% style="border:1px solid #000000;">提交者</td>
+                    <td width=10% style="border:1px solid #000000;">称呼</td>
+                    <td width=10% style="border:1px solid #000000;">电话</td>
+                    <td width=10% style="border:1px solid #000000;">邮箱</td>
+                    <td width=20% style="border:1px solid #000000;">授课地址</td>
+                    <td width=20% style="border:1px solid #000000;">要求</td>
+                    <td width=5% style="border:1px solid #000000;">状态</td>
+                    <td width=10% style="border:1px solid #000000;">预约时间</td>
+                    <td width=5% style="border:1px solid #000000;">管理</td>
+                </tr>
+                 {% for bookcourseflow in teacherinfo.bookcourseflow_set.all %}
+                    <tr align="left">
+                        <td style="border:1px solid #000000;">
+                           <a  href="{% url 'studentdetail' bookcourseflow.student.id %}">{{bookcourseflow.student.name}}</a>
+                        </td>
+                        <td style="border:1px solid #000000;">{{bookcourseflow.callname}}</td>
+                        <td style="border:1px solid #000000;">{{bookcourseflow.phone}}</td>
+                        <td style="border:1px solid #000000;">{{bookcourseflow.mail}}</td>
+                        <td style="border:1px solid #000000;">{{bookcourseflow.address}}</td>
+                        <td style="border:1px solid #000000;">{{bookcourseflow.demand}}</td>
+                        <td style="border:1px solid #000000;"><label name="bookstate" id= "state{{bookcourseflow.state}}"><label></td>
+                        <td style="border:1px solid #000000;">{{bookcourseflow.updatetime }} </td>
+                        <td style="border:1px solid #000000;">
+                            <a  name="accept" style="visibility:hidden" href="{% url 'processbook' bookcourseflow.id  1 %}">接受</a> 
+                            <a  name="deny" style="visibility:hidden" href="{% url 'processbook' bookcourseflow.id  3%}">拒绝</a> 
+                            <a  name="finish" style="visibility:hidden" href="{% url 'processbook' bookcourseflow.id  2%}">完成</a> 
+                        </td>
                     </tr>
                 {% endfor %}
             </table>
@@ -75,6 +110,38 @@
                 }
                 else if(state.id.indexOf("2")!=-1){
                     state.innerText="打回";
+                }
+            }
+          var bookstates = document.getElementsByName('bookstate');
+            var accepts = document.getElementsByName('accept');
+            var denys = document.getElementsByName('deny');
+            alert(00000000000000)
+            alert(bookstates.length)
+            for( var i=0; i<bookstates.length; i++){
+                var bookstate=bookstates[i];
+                alert('0000000000000000000000000000')
+                if(bookstate.id.indexOf("0")!=-1){
+                    alert('111111111111111')
+                    bookstate.innerText="已提交预约";
+                    accepts[i].style.visibility="visible"
+                    denys[i].style.visibility="visible" 
+                }
+                else if(state.id.indexOf("1")!=-1){
+                    alert('22222222222222')
+                    bookstate.innerText="预约成功";
+                    finish[i].style.visibility="visible" 
+                }
+                else if(state.id.indexOf("2")!=-1){
+                    alert('333333333333333')
+                    bookstate.innerText="已完成";
+                }
+                else if(state.id.indexOf("3")!=-1){
+                    alert('44444444444444444')
+                    bookstate.innerText="拒绝预约";
+                }
+                else if(state.id.indexOf("4")!=-1){
+                    alert('55555555555')
+                    bookstate.innerText="已取消";
                 }
             }
         }

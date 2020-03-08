@@ -229,8 +229,7 @@ def my(request):#我的
         return render(request, 'my.html',context)
     elif user.usertype==1:
         teacher=TeacherInfos.objects.get(teacher=user)
-        courseflow_list=Courseflow.objects.filter(teacher=teacher)
-        context = {'courseflow_list':  courseflow_list,'notice_list': notice_list,'teacherinfo': teacher}
+        context = {'notice_list': notice_list,'teacherinfo': teacher}
         return render(request, 'my_t.html',context)
     elif user.usertype==2:
         admin=AdminInfos.objects.get(admin=user)
@@ -872,6 +871,28 @@ def cancelbook(request,bookflow_id):#取消预约
     bookflow.save()
     return HttpResponseRedirect(reverse('my'))
 
+def processbook(request,bookflow_id,state):
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    user=Users.objects.get(name=cook)
+    bookflow=BookCourseflow.objects.get(id=bookflow_id)
+    bookflow.state=state
+    bookflow.save()
+    if state==0:
+        messages.add_message(request,messages.INFO,'已提交预约')
+    elif state==1:
+        messages.add_message(request,messages.INFO,'已接受预约')
+    elif state==2:
+        messages.add_message(request,messages.INFO,'已完成')
+    elif state==3:
+        messages.add_message(request,messages.INFO,'已拒绝预约')
+    elif state==4:
+        messages.add_message(request,messages.INFO,'已取消预约')
+    return HttpResponseRedirect(reverse('my'))
+
+
 def markteacher(request,bookflow_id):#根据预约上课情况给老师打分
     cook = request.COOKIES.get("username")
     print('cook:', cook)
@@ -918,3 +939,14 @@ def teacherdetail(request,teacher_id):
     course_list=  teacherinfo.teachercourse_set.all()
     context = {'teacherinfo': teacherinfo,'course_list': course_list}
     return render(request, 'teacherdetail.html',context)
+
+def studentdetail(request,student_id):
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html',context)
+    user=Users.objects.get(name=cook)
+    temp_id=student_id
+    studentinfo=StudentInfos.objects.get(id=temp_id)
+    context = {'studentinfo': studentinfo}
+    return render(request, 'studentdetail.html',context)

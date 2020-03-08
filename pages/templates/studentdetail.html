@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+     <!-- 使用CSS样式来控制div布局 -->
+     <style type="text/css">
+        /*定义全局的div布局*/
+        #content{
+            width: 100%;
+            height: 800px;
+            margin:200px auto;
+        }
+        html,body{text-align:center;background:url("/static/images/bg_pic.jpg");background-repeat:repeat}
+        input,select{height:30px; width:200px; vertical-align:left;}
+
+    </style>
+</head>
+<body>
+    <div style="width:80%;margin:5%;align:left;font-size:20px; auto">
+        <h4>老师信息</h4>
+        <table >
+            <tr align="left">
+                <td width="50%">账户名:{{ studentinfo.student.name }}</td>
+                <td width="50%">姓名:{{ studentinfo.student.fullname}}</td>
+            </tr>
+            <tr align="left">
+                <td width="50%">邮箱:{{ studentinfo.student.email }}</td>
+                <td width="50%">电话:{{ studentinfo.student.phone }}</td>
+            </tr>
+            <tr align="left">
+                <td width="50%">年级:{{ studentinfo.grade }}</td>
+                <td width="50%">性别:{{ studentinfo.student.gender }}</td>
+            </tr>
+        </table>
+        <p align="left">
+            历史预约：
+            {% for bookcourseflow in studentinfo.bookcourseflow_set.all %}
+                <a  href="{% url 'teacherdetail' bookcourseflow.teacher.teacher.id %}">&nbsp&nbsp{{ bookcourseflow.teacher.teacher.name}}</a>
+           {% endfor %}
+           </br>
+            他的需求：
+            {% for studentcourse in studentinfo.studentcourses_set.all %}
+                <a  href="{% url 'studentcoursedetail' studentcourse.id %}" >&nbsp&nbsp{{ studentcourse.name}}</a>
+            {% endfor %}
+            </br>
+            地址:{{ studentinfo.student.address }}
+        </p>
+    </div>
+</body>
+</html>
