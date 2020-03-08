@@ -7,14 +7,14 @@
 {% block topmenucenter %}
     <div style="padding:5px">
         <a id =link href="{% url 'home' %}">首页</a>
-        <a id =link href="{% url 'checkcost' %}">资费标准</a>
+        <a id =link href="{% url 'checkcharge' %}">资费标准</a>
         <a id =link  href="{% url 'publicneed' %}">发布需求</a> 
     </div>
 {% endblock %}
 
 {% block contentbody %}
-    <div style="margin: 0% 10% 0% 10%">
-        <div style="width:100%; height:300px">
+    <div id="textcontent" style="margin: 5% 5% 5% 5%">
+        <div style="width:80%">
             <h4>个人信息</h4>
             <table style="margin:0% 0% 0% 0%;width:100%">
                 <tr align="left">
@@ -36,7 +36,7 @@
                 <a  href="{% url 'editmyinfo' %}">编辑</a>
             </p>
         </div>
-        <div  style="width:100%">
+        <div  style="width:80%">
             <h4>我的预约</h4>
             <table align="center" style="table-layer:fixed"  border="0" cellpadding="0" cellspacing="0" style="border:1px solid #000000;">
                 <tr align="left">
@@ -46,8 +46,9 @@
                     <td width=10% style="border:1px solid #000000;">邮箱</td>
                     <td width=20% style="border:1px solid #000000;">授课地址</td>
                     <td width=20% style="border:1px solid #000000;">要求</td>
-                    <td width=10% style="border:1px solid #000000;">状态</td>
+                    <td width=5% style="border:1px solid #000000;">状态</td>
                     <td width=10% style="border:1px solid #000000;">预约时间</td>
+                    <td width=5% style="border:1px solid #000000;">管理</td>
                 </tr>
                  {% for bookcourseflow in bookcourseflow_list.all %}
                     <tr align="left">
@@ -59,21 +60,27 @@
                         <td style="border:1px solid #000000;">{{bookcourseflow.mail}}</td>
                         <td style="border:1px solid #000000;">{{bookcourseflow.address}}</td>
                         <td style="border:1px solid #000000;">{{bookcourseflow.demand}}</td>
-                        <td style="border:1px solid #000000;"><label id="state" name={{bookcourseflow.state}}><label> </td>
-                        <td style="border:1px solid #000000;">{{bookcourseflow.time }} </td>
+                        <td style="border:1px solid #000000;"><label name="state" id= "state{{bookcourseflow.state}}"><label></td>
+                        <td style="border:1px solid #000000;">{{bookcourseflow.updatetime }} </td>
+                        <td style="border:1px solid #000000;">
+                            <a  name="cancel" style="visibility:hidden" href="{% url 'cancelbook' bookcourseflow.id %}">取消预约</a> 
+                            <a  name="mark" style="visibility:hidden" href="{% url 'markteacher' bookcourseflow.id %}">打分</a> 
+                        </td>
                     </tr>
                 {% endfor %}
             </table>
         </div>
-        <div  style="width:100%">
+        <div  style="width:80%">
             <h4>我的需求</h4>
             <table align="center" style="table-layer:fixed"  border="0" cellpadding="0" cellspacing="0" style="border:1px solid #000000;">
                 <tr align="left">
-                    <td width=20% style="border:1px solid #000000;">名称</td>
-                    <td width=15% style="border:1px solid #000000;">年级</td>
-                    <td width=15% style="border:1px solid #000000;">科目</td>
-                    <td width=30% style="border:1px solid #000000;">要求</td>
-                    <td width=20% style="border:1px solid #000000;">发布时间</td>
+                    <td width=10% style="border:1px solid #000000;">名称</td>
+                    <td width=10% style="border:1px solid #000000;">年级</td>
+                    <td width=10% style="border:1px solid #000000;">科目</td>
+                    <td width=20% style="border:1px solid #000000;">要求</td>
+                    <td width=15% style="border:1px solid #000000;">联系电话</td>
+                    <td width=20% style="border:1px solid #000000;">上课地址</td>
+                    <td width=15% style="border:1px solid #000000;">发布时间</td>
                 </tr>
                 {% for studentcourses in studentcourses_list.all %}
                     <tr align="left">
@@ -81,22 +88,41 @@
                         <td style="border:1px solid #000000;">{{studentcourses.grade}}</td>
                         <td style="border:1px solid #000000;">{{studentcourses.subject}}</td>
                         <td style="border:1px solid #000000;">{{studentcourses.demand}}</td>
+                        <td style="border:1px solid #000000;">{{studentcourses.phone}}</td>
+                        <td style="border:1px solid #000000;">{{studentcourses.address }} </td>
                         <td style="border:1px solid #000000;">{{studentcourses.time }} </td>
                     </tr>
                 {% endfor %}
             </table>
         </div>
 	</div>
-<script>
-    window.onload=function(){
-        var state = document.getElementById('state');
-        if(state.name==0){
-            state.name.innerHtml="已预约"
-        } else if(state.name==1){
-            state.name.innerHtml="已完成"
-        } else if(state.name==2){
-            state.name.innerHtml="已取消"
+    <script>
+        window.onload=function(){
+            var states = document.getElementsByName('state');
+            var cancels = document.getElementsByName('cancel');
+            var marks = document.getElementsByName('mark');
+            for( var i=0; i<states.length; i++){
+                var state=states[i];
+                if(state.id.indexOf("0")!=-1){
+                    state.innerText="已提交预约";
+                    cancels[i].style.visibility="visible"
+                }
+                else if(state.id.indexOf("1")!=-1){
+                    state.innerText="预约成功";
+                    cancels[i].style.visibility="visible"
+                }
+                else if(state.id.indexOf("2")!=-1){
+                    state.innerText="已完成";
+                    marks[i].style.visibility="visible"
+                }
+                else if(state.id.indexOf("3")!=-1){
+                    state.innerText="预约失败";
+                }
+                else if(state.id.indexOf("4")!=-1){
+                    state.innerText="已取消";
+                    marks[i].style.visibility="visible"
+                }
+            }
         }
-    }
-</script>
+        </script>
 {% endblock %}

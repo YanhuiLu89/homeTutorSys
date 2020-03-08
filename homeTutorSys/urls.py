@@ -63,9 +63,11 @@ urlpatterns = [
     path('processmsg/<message_id>', views.processmsg, name='processmsg'),
     path('replymsg/<message_id>', views.replymsg, name='replymsg'),
 
-    path('checkcost/', views.checkcost, name='checkcost'),
+    path('checkcharge/', views.checkcharge, name='checkcharge'),
     path('publicneed/', views.publicneed, name='publicneed'),
     path('bookteacher/<teacher_id>', views.bookteacher, name='bookteacher'),
+    path('cancelbook/<bookflow_id>', views.cancelbook, name='cancelbook'),
+    path('markteacher/<bookflow_id>', views.markteacher, name='markteacher'),
     path('studentcoursedetail/<stcourse_id>', views.studentcoursedetail, name='studentcoursedetail'),
     path('editcharge/<charge_id>', views.editcharge, name='editcharge'),
     path('delcharge/<charge_id>', views.delcharge, name='delcharge'),

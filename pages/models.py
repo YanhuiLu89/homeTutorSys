@@ -67,7 +67,7 @@ class Recruit(models.Model):#招聘信息
 
 class Courseflow(models.Model):#老师提交课程审批流程
     course = models.ForeignKey(TeacherCourse,default=None, on_delete=models.CASCADE)
-    state = models.IntegerField(default=0)#0-提交 1-通过 2-打回
+    state = models.IntegerField(default=0)#0-提交1-通过 2-打回
     teacher = models.ForeignKey(TeacherInfos,default=None,on_delete=models.CASCADE)#标志哪个老师提交的课程
     time = models.DateTimeField(auto_now=True)
 
@@ -75,7 +75,7 @@ class BookCourseflow(models.Model):#预约老师
     student = models.OneToOneField(StudentInfos, on_delete=models.CASCADE)
     callname=models.CharField(max_length=20,default='')
     teacher=models.ForeignKey(TeacherInfos, on_delete=models.CASCADE,default=None)
-    state = models.IntegerField(default=0)#0-待上课 1-已完成 2已取消
+    state = models.IntegerField(default=0)#0-提交预约，1-预约成功 2-已完成 3预约失败,4-已取消
     mail = models.EmailField(default='')
     phone=models.CharField(max_length=50,default='')
     address=models.CharField(max_length=200,default='')

@@ -7,7 +7,7 @@
 {% block topmenucenter %}
     <div style="padding:5px">
         <a id =selectedlink href="{% url 'home' %}">首页</a>
-        <a id =link href="{% url 'checkcost' %}">资费标准</a>
+        <a id =link href="{% url 'checkcharge' %}">资费标准</a>
         <a id =link  href="{% url 'publicneed' %}">发布需求</a> 
     </div>
 {% endblock %}
@@ -19,16 +19,16 @@
                 <table align="center" style="table-layer:fixed"  border="0" cellpadding="0" cellspacing="0" style="border:1px solid #000000;">
                     <tr align="left">
                         <td width=10% style="border:1px solid #000000;">教员账号</td>
-                        <td width=10% style="border:1px solid #000000;">姓名</td>
+                        <td width=8% style="border:1px solid #000000;">姓名</td>
                         <td width=5% style="border:1px solid #000000;">学历</td>
                         <td width=5% style="border:1px solid #000000;">职称</td>
                         <td width=15% style="border:1px solid #000000;">在授课程</td>
                         <td width=20% style="border:1px solid #000000;">自我描述</td>
                         <td width=10% style="border:1px solid #000000;">电话</td>
                         <td width=10% style="border:1px solid #000000;">邮箱</td>
-                        <td width=10% style="border:1px solid #000000;">薪水要求</td>
+                        <td width=8% style="border:1px solid #000000;">薪水要求</td>
                         <td width=5% style="border:1px solid #000000;">评分(5分制)</td>
-                        <td width=5% style="border:1px solid #000000;">预约</td>
+                        <td width=9% style="border:1px solid #000000;">预约</td>
                     </tr>
                      {% for teacherinfo in teacherinfo_list.all %}
                         <tr align="left">
@@ -46,7 +46,7 @@
                             <td style="border:1px solid #000000;">{{teacherinfo.teacher.mail}}</td>
                             <td style="border:1px solid #000000;">{{teacherinfo.fee}}元/小时</td>
                             <td style="border:1px solid #000000;">{{teacherinfo.mark}}分</td>
-                            <td style="border:1px solid #000000;"><a href="{% url 'bookteacher' teacherinfo.teacher.id %}">预约老师</a></td>
+                            <td style="border:1px solid #000000;"><a href="{% url 'bookteacher' teacherinfo.teacher.id %}">预约</a></td>
                         </tr>
                     {% endfor %}
                 </table>

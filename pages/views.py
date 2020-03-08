@@ -800,14 +800,16 @@ def definedesign(request):
     content={'teacher_list':teacher_list}
     return render(request, 'definedesign.html',content)
 
-def checkcost(request):#选题页面
+def checkcharge(request):#资费标准
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    design_list=Designs.objects.all()
-    teacher_list=TeacherInfos.objects.all()
-    context = {'design_list': design_list,'teacher_list':teacher_list}
+    charge_list=Charge.objects.all()
+    notice_list = Notices.objects.all().order_by('-time')
+    content = {'notice_list': notice_list,'charge_list':charge_list}
+    return render(request, 'checkcharge.html',content)
+
 
 def publicneed(request):#选题页面
     cook = request.COOKIES.get("username")
@@ -821,7 +823,9 @@ def publicneed(request):#选题页面
         temp_grade = request.POST['grade']
         temp_subject = request.POST['subject']
         temp_demand = request.POST['demand']
-        studentcourse=StudentCourses(student=student,name=temp_name,grade=temp_grade,subject=temp_subject,demand=temp_demand)
+        temp_phone = request.POST['phone']
+        temp_address = request.POST['address']
+        studentcourse=StudentCourses(student=student,name=temp_name,grade=temp_grade,subject=temp_subject,demand=temp_demand,phone=temp_phone,address=temp_address)
         studentcourse.save()
         messages.add_message(request,messages.INFO,'已发布《'+temp_name+'》需求，可在 我的->我的需求 中查看')
     notice_list = Notices.objects.all().order_by('-time')
@@ -850,6 +854,27 @@ def bookteacher(request,teacher_id):#预约老师
     context = {'teacher': teacher,'notice_list': notice_list}
     return render(request, 'bookteacher.html',context)
 
+def cancelbook(request,bookflow_id):#取消预约
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    user=Users.objects.get(name=cook)
+    bookflow=BookCourseflow.objects.get(id=bookflow_id)
+    bookflow.state=4
+    bookflow.save()
+    return HttpResponseRedirect(reverse('my'))
+
+def markteacher(request,bookflow_id):#根据预约上课情况给老师打分
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    user=Users.objects.get(name=cook)
+    bookflow=BookCourseflow.objects.get(id=bookflow_id)
+    bookflow.state=4
+    bookflow.save()
+    return HttpResponseRedirect(reverse('my'))
     
 def studentcoursedetail(request,stcourse_id):
     cook = request.COOKIES.get("username")

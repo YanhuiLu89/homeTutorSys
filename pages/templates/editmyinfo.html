@@ -7,8 +7,8 @@
 {% block topmenucenter %}
     <div style="padding:20px">
         <a id =link href="{% url 'home' %}">首页</a>
-        <a id =link href="{% url 'selectdesign' %}">选择课题</a>
-        <a id =link  href="{% url 'definedesign' %}">自拟课题</a> 
+        <a id =link href="{% url 'checkcharge' %}">资费标准</a>
+        <a id =link  href="{% url 'publicneed' %}">发布需求</a> 
     </div>
 {% endblock %}
 
@@ -28,18 +28,38 @@
                 </tr>
                 <tr align="left">
                     <td>姓名:<input type="text"  name="fullname" value="{{ studentinfo.student.fullname }}" style="width:50%;height:32px"/></td>
-                    <td>性别:<input type="text"  name="gender" value="{{ studentinfo.student.gender }}" style="width:50%;height:32px"/></td>
+                    <td>性别：
+                        <select id="gender"  name="gender" panelHeight="auto" style="width: 50%;height:30px">
+                            <option value=男 >女</option>
+                            <option value=女二>女</option>
+                        </select> 
+                    </td>
                 </tr>
                 <tr align="left">
-                    <td>年级:<input type="text" name="grade" value="{{ studentinfo.grade }}" style="width:50%;height:32px"/></td>
+                    <td>年级:
+                    <select id="grade"  name="grade" panelHeight="auto" style="width: 50%;height:32px">
+                        <option value=高三 >高三</option>
+                        <option value=高二>高二</option>
+                        <option value=高一>高一</option>
+                        <option value=初三>初三</option>
+                        <option value=初二>初二</option>
+                        <option value=初一>初一</option>
+                        <option value=小学>小学</option>
+                        <option value=学前>学前</option>
+                        <option value=其他>其他</option>
+                    </select> 
+                    </td>
                     <td>电话:<input type="text" name="phone" value="{{ studentinfo.student.phone }}" style="width:50%;height:32px"/></td>
                 </tr>
                 </table>
-                <table>
+                </table>
+                <table  style="margin:0% 0% 0% 0%;width:100%;" vertical-align=left>
                     <tr align="left">
-                        <td width="90%">地址:<input type="text"  name="address" value="{{ studentinfo.student.address }}" style="width:80%;height:32px"/></td>
-                        <td><input type="submit" value="更新" name="updatemyinfo" style="width:120px; height:30px;float:center" ></td>
+                        <td>地址:<textarea id="id_address"  name="address" style="width:90%; height:90px">{{teacherinfo.teacher.address }}</textarea></td>
                     </tr>  
+                    <tr>
+                     <td><input type="submit" value="更新" name="updatemyinfo" style="width:120px; height:30px;float:center" ></td>
+                    </tr>
                 </table>
             </form>
         </div>

@@ -28,20 +28,32 @@
                 </tr>
                 <tr align="left">
                     <td>姓名:<input type="text"  name="fullname" value="{{ teacherinfo.teacher.fullname }}" style="width:50%;height:32px"/></td>
-                    <td>性别:<input type="text"  name="gender" value="{{ teacherinfo.teacher.gender }}" style="width:50%;height:32px"/></td>
+                    <td>性别:
+                        <select id="gender"  name="gender" panelHeight="auto" style="width: 50%;height:30px">
+                            <option value=男 >女</option>
+                            <option value=女二>女</option>
+                        </select> 
+                    </td>
                 </tr>
                 <tr align="left">
-                    <td>学历:<input type="text" name="education" value="{{ teacherinfo.education }}" style="width:50%;height:32px"/></td>
+                    <td>学历:
+                        <select id="education"  name="education" panelHeight="auto" style="width: 50%;height:32px">
+                            <option value=大专 >大专</option>
+                            <option value=本科>本科</option>
+                            <option value=研究生>研究生</option>
+                            <option value=博士>博士</option>
+                        </select> 
+                    </td>
                     <td>职称:<input type="text" name="title" value="{{ teacherinfo.title }}" style="width:50%;height:32px"/></td>
                 </tr>
                 <tr align="left">
-                    <td>费用:<input type="number" name="fee" value="{{ teacherinfo.efee }}" style="width:50%;height:32px"/>元/小时</td>
+                    <td>费用:<input type="number" name="fee" value="{{ teacherinfo.fee }}" style="width:50%;height:32px"/>元/小时</td>
                     <td</td>
                 </tr>
                 </table>
                 <table  style="margin:0% 0% 0% 0%;width:100%;" vertical-align=left>
                     <tr align="left">
-                        <td>地址:<textarea id="id_address"  name="address" value="{{teacherinfo.teacher.address }}"  style="width:90%; height:90px"></textarea></td>
+                        <td>地址:<textarea id="id_address"  name="address" style="width:90%; height:90px">{{teacherinfo.teacher.address }}</textarea></td>
                     </tr>  
                     <tr>
                      <td><input type="submit" value="更新" name="updatemyinfo" style="width:120px; height:30px;float:center" ></td>

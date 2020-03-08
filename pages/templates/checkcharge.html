@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block head %}  
+
+{% endblock %}
+
+{% block topmenucenter %}
+    <div style="padding:5px">
+        <a id =link href="{% url 'home' %}">首页</a>
+        <a id =selectedlink href="{% url 'checkcharge' %}">资费标准</a>
+        <a id =link  href="{% url 'publicneed' %}">发布需求</a> 
+    </div>
+{% endblock %}
+
+{% block contentbody %}
+    <div  id="textcontent" style="margin: 5% 5% 5% 5%">
+        <div style="width:90%;font-size:16px">
+                <h3>资费标准</h3>
+                <table align="center" style="table-layer:fixed"  border="0" cellpadding="0" cellspacing="0" style="border:1px solid #000000;">
+                    <tr align="left">
+                        <td width=20% style="border:1px solid #000000;">名称</td>
+                        <td width=15% style="border:1px solid #000000;">年级</td>
+                        <td width=15% style="border:1px solid #000000;">科目</td>
+                        <td width=20% style="border:1px solid #000000;">老师身份</td>
+                        <td width=10% style="border:1px solid #000000;">费用</td>
+                    </tr>
+                     {% for charge in charge_list.all %}
+                        <tr align="left">
+                            <td style="border:1px solid #000000;">{{charge.name}}</td>
+                            <td style="border:1px solid #000000;">{{charge.grade}}</td>
+                            <td style="border:1px solid #000000;">{{charge.subject}}</td>
+                            <td style="border:1px solid #000000;">{{charge.teachertype}}</td>
+                            <td style="border:1px solid #000000;">{{charge.fee}}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+        </div>
+	</div>
+{% endblock %}
