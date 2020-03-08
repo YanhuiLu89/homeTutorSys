@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+     <!-- 使用CSS样式来控制div布局 -->
+     <style type="text/css">
+        /*定义全局的div布局*/
+        #content{
+            width: 100%;
+            height: 800px;
+            margin:200px auto;
+        }
+        html,body{text-align:center;background:url("/static/images/bg_pic.jpg");background-repeat:repeat}
+        input,select{height:30px; width:200px; vertical-align:left;}
+
+    </style>
+</head>
+<body>
+    <div style="width:100%;margin:5%;align:left;font-size:20px; auto">
+        <h4>老师信息</h4>
+        <table >
+            <tr align="left">
+                <td width="35%">账户名:{{ teacherinfo.teacher.name }}</td>
+                <td width="35%">姓名:{{ teacherinfo.teacher.fullname}}</td>
+                <td width="30%">性别:{{ teacherinfo.teacher.gender }}</td>
+            </tr>
+            <tr align="left">
+                <td width="35%">邮箱:{{ teacherinfo.teacher.email }}</td>
+                <td width="35%">密码:{{ teacherinfo.teacher.password }}</td>
+                <td width="30%">评分:{{ teacherinfo.mark }}</td>
+            </tr>
+            <tr align="left">
+                <td width="35%">学历:{{ teacherinfo.education }}</td>
+                <td width="35%">职称:{{ teacherinfo.title }}</td>
+                <td width="30%">薪水:{{ teacherinfo.fee }}元/小时</td>
+            </tr>
+        </table>
+        <p align="left">
+            在授课程：
+            {% for course in course_list.all %}
+               <a  href="{% url 'teachercoursedetail' course.id %}">&nbsp&nbsp{{ course.name}}</a>
+            {% endfor %}
+        </p>
+        <p align="left">
+            地址:{{ teacherinfo.teacher.address }}
+            <br/>
+            电话:{{ teacherinfo.teacher.phone }}
+            <br/>
+            自我介绍：{{teacherinfo.introduce}}
+            <br/>
+        </p>
+    </div>
+</body>
+</html>

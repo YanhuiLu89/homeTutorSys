@@ -13,8 +13,8 @@
 {% endblock %}
 
 {% block contentbody %}
-    <div style="margin: 0% 10% 0% 10%">
-        <div style="width:100%; height:300px">
+    <div style="margin: 5% 5% 5% 5%">
+        <div style="width:100%;">
             <h4>编辑个人信息</h4>
             <form enctype='multipart/form-data' action="{% url 'editmyinfo' %}" method="post" name='editmyinfo' >{% csrf_token %}
             <table style="margin:0% 0% 0% 0%;width:100%;" vertical-align=left>

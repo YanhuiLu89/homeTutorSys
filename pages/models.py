@@ -68,7 +68,6 @@ class Recruit(models.Model):#招聘信息
 class Courseflow(models.Model):#老师提交课程审批流程
     course = models.ForeignKey(TeacherCourse,default=None, on_delete=models.CASCADE)
     state = models.IntegerField(default=0)#0-提交 1-通过 2-打回
-    updatetime = models.DateTimeField(auto_now=True)#
     teacher = models.ForeignKey(TeacherInfos,default=None,on_delete=models.CASCADE)#标志哪个老师提交的课程
     time = models.DateTimeField(auto_now=True)
 

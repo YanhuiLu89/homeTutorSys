@@ -86,6 +86,8 @@ def home(request):#主页
         context = {'teacherinfo_list': teacherinfo_list,'notice_list': notice_list}
         response=render(request, 'homepage.html',context)
     elif user.usertype == 1:
+        studentinfo_list=StudentInfos.objects.all()
+        context = {'studentinfo_list': studentinfo_list,'notice_list': notice_list}
         return render(request, 'homepage_t.html',context)
     elif user.usertype == 2:
         context = {'notice_list': notice_list}
@@ -153,7 +155,7 @@ def editmyinfo(request):#我的
             return render(request, 'editmyinfo.html',context)
         elif user.usertype==1:
             teacher=TeacherInfos.objects.get(teacher=user)
-            context = {'teacher':teacher}
+            context = {'notice_list': notice_list,'teacherinfo':teacher}
             return render(request, 'editmyinfo_t.html',context)
         elif user.usertype==2:
             admin =AdminInfos.objects.get(admin =user)
@@ -180,16 +182,26 @@ def editmyinfo(request):#我的
             studentinfo.save()
         elif user.usertype==1:
             temp_name=request.POST['name']
-            temp_major=request.POST['major']
-            temp_title=request.POST['title']
+            temp_fullname=request.POST['fullname']
+            temp_education=request.POST['education']
+            temp_gender=request.POST['gender']
             temp_phone=request.POST['phone']
-            teacher=TeacherInfos.objects.get(teacher=user)
-            teacher=TeacherInfos.objects.get(teacher=user)
-            teacher.teacher_name=temp_name
-            teacher.teacher_major=temp_major
-            teacher.teacher_phone=temp_phone
-            teacher.teacher_title=temp_title
-            teacher.save()
+            temp_address=request.POST['address']
+            temp_password=request.POST['password']
+            temp_title=request.POST['title']
+            temp_fee=request.POST['fee']
+            teacherinfo=TeacherInfos.objects.get(teacher=user)
+            user.name=temp_name
+            user.fullname=temp_fullname
+            teacherinfo.education=temp_education
+            teacherinfo.fee=temp_fee
+            teacherinfo.title=temp_title
+            user.gender=temp_gender
+            user.phone=temp_phone
+            user.address=temp_address
+            userpassword=temp_password
+            user.save()
+            teacherinfo.save()
         elif user.usertype==2:
             admin =AdminInfos.objects.get(admin =user)
             temp_name=request.POST['name']
@@ -214,9 +226,8 @@ def my(request):#我的
         return render(request, 'my.html',context)
     elif user.usertype==1:
         teacher=TeacherInfos.objects.get(teacher=user)
-        mywork1=Workflow.objects.filter(Q(currentuser=user.name)&Q(nextaction=u'待老师审核'))
-        mywork2=Workflow.objects.filter(Q(currentuser=user.name)&Q(state=u'老师审核通过'))
-        context = {'teacher': teacher,'list1count':len(mywork1),'work_list1':mywork1,'list2count':len(mywork2),'work_list2':mywork2}
+        courseflow_list=Courseflow.objects.filter(teacher=teacher)
+        context = {'courseflow_list':  courseflow_list,'notice_list': notice_list,'teacherinfo': teacher}
         return render(request, 'my_t.html',context)
     elif user.usertype==2:
         admin=AdminInfos.objects.get(admin=user)
@@ -235,13 +246,23 @@ def mgcourse(request):#
     notice_list = Notices.objects.all().order_by('-time')
     if user.usertype==1:#老师只管理自己的课程
         teacher=TeacherInfos.objects.get(teacher=user)
-        course_list=TeacherCourse.objects.filter(teacher=teacher)
+        course_list=teacher.teachercourse_set.all()
         context = {'notice_list': notice_list,'teachercourse_list': course_list}
         return render(request, 'mgcourse_t.html',context)
     elif user.usertype==2:#管理员管理所有的课程
         course_list=TeacherCourse.objects.all().order_by('-id')
         context = {'notice_list': notice_list,'teachercourse_list': course_list}
         return render(request, 'mgcourse_a.html',context)
+
+def teachercoursedetail(request,course_id):#
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    user = Users.objects.get(name = cook)
+    course=TeacherCourse.objects.get(id=course_id)
+    context = {'course': course}
+    return render(request, 'teachercoursedetail.html',context)
 
 def mgcharge(request):#
     cook = request.COOKIES.get("username")
@@ -369,6 +390,8 @@ def addcourse(request):#添加课题
                 teacher=TeacherInfos.objects.get(teacher=user)
                 teachercourse.teacher.add(teacher)
                 courseflow=Courseflow(course=teachercourse,state=0,teacher=teacher,time=timezone.now())
+                courseflow.save()
+                messages.add_message(request,messages.INFO,'自定义课程已提交，可在我的->我的自定义课程 中查看审批状态')
             return HttpResponseRedirect(reverse('mgcourse'))#重定向到选题管理页面
     if user.usertype==1:
         teacher=TeacherInfos.objects.get(teacher=user)
@@ -851,13 +874,8 @@ def teacherdetail(request,teacher_id):
     if cook == None:
         return  render(request, 'index.html',context)
     user=Users.objects.get(name=cook)
-    temp_stcourse_id=stcourse_id
-    studentcourse=StudentCourses.objects.get(id=temp_stcourse_id)
-    notice_list = Notices.objects.all().order_by('-time')
-    context = {'studentcourse': studentcourse,'notice_list': notice_list}
-    if user.usertype==0:
-        return render(request, 'studentcoursedetail.html',context)
-    elif user.usertype==1:
-        return render(request, 'studentcoursedetail_t.html',context)
-    elif user.usertype==2:
-        return render(request, 'studentcoursedetail_a.html',context)
+    temp_id=teacher_id
+    teacherinfo=TeacherInfos.objects.get(id=temp_id)
+    course_list=  teacherinfo.teachercourse_set.all()
+    context = {'teacherinfo': teacherinfo,'course_list': course_list}
+    return render(request, 'teacherdetail.html',context)

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+     <!-- 使用CSS样式来控制div布局 -->
+     <style type="text/css">
+        /*定义全局的div布局*/
+        #content{
+            width: 100%;
+            height: 800px;
+            margin:200px auto;
+        }
+        html,body{text-align:center;background:url("/static/images/bg_pic.jpg");background-repeat:repeat}
+        input,select{height:30px; width:200px; vertical-align:left;}
+
+    </style>
+</head>
+<body>
+    <div style="width:100%;margin:5%;align:left;font-size:20px; auto">
+        <h4>课程信息</h4>
+        <table align="center" >
+            <tr align="left">
+                <td align="left">课程名称：{{course.name}}</td>
+            </tr>
+            <tr align="left">
+                <td align="left">年级：{{course.grade}} </td>  
+            </tr>
+            <tr align="left">
+                <td align="left">科目：{{course.subject}}</td>
+            </tr>
+            <tr align="left">
+                <td align="left">简介：{{course.introduce}}</td>
+            </tr>
+            <tr align="left">
+                <td align="left">可授该课程老师： 
+                    {% for teacher in course.teacher.all %}
+                        <a  href="{% url 'teacherdetail' teacher.id %}">&nbsp&nbsp{{ teacher.teacher.name}}</a>
+                    {% endfor %}
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

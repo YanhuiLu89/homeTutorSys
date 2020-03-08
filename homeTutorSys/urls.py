@@ -42,7 +42,8 @@ urlpatterns = [
     path('addteacher2course/<course_id>', views.addteacher2course, name='addteacher2course'),
     path('rvteacherfromcourse/<course_id>', views.rvteacherfromcourse, name='rvteacherfromcourse'),
     #path('submitdesign/', views.submitdesign, name='submitdesign'),
-    path('definedesign/', views.definedesign, name='definedesign'),
+    #path('definedesign/', views.definedesign, name='definedesign'),
+    path('teachercoursedetail/<course_id>', views.teachercoursedetail, name='teachercoursedetail'),
 
     path('mgstudent/', views.mgstudent, name='mgstudent'),
     path('addstudent/', views.addstudent, name='addstudent'),
