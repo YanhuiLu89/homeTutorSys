@@ -23,15 +23,18 @@
 
 {% block contentbody %}
 <div id="textcontent" style="margin: 5% 5% 5% 5%;width:80%" >
-    <h4>消息中心</h4>
-    {% for message in message_list.all %}
-        <p align="left">
-            <lable>留言:</label> {{ message.text}}
+    <h4>留言</h4>
+    <p align="left">
+        <tr>
+            <td>To:{{ teacher.name}}</td>
+        </tr>
+    </p>
+    <p>
+        <form enctype='multipart/form-data' action="{% url 'leavmessage' teacher.id %}" method="post" name='leavmessage' >{% csrf_token %}
+            <textarea id="id_message" placeholder="请输入留言内容" name="message" style="width:80%; height:100px" autofocus required></textarea>
             </br>
-            <lable>回复内容:</label> {{ message.reply}}
-            <br>
-            <lable>时间:</label> {{ message.updatetime}}
-        </p>
-    {% endfor %}
-</div>
+            <input type="submit" name='replymsg' value="提交" style="width:80px; height:35px;float:right">
+        </form>
+    </p>
+    </div>
 {% endblock %}

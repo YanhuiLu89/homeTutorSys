@@ -15,8 +15,18 @@
 {% block contentbody %}
 <div style="width:90%;margin:5% auto">
         <form enctype='multipart/form-data' action="{% url 'bookteacher' teacher.id %}" method="post" name='bookteacher' >{% csrf_token %}
-            <h4>预约{{teacher.name}}老师</h4>
+            <h4>预约{{teacherinfo.teacher.name}}老师</h4>
             <table align="center" >
+                <tr>
+                    <td style="width:20%">课程</td>
+                    <td style="width: 80%;height:60px">
+                        <select id="5"  name="course" panelHeight="auto" style="width: 100%;height:30px;float:left">
+                            {% for teachercourse in teacherinfo.teachercourse_set.all %}
+                                 <option value={{teachercourse.name}}>{{teachercourse.name}}</option>
+                            {% endfor %}
+                        </select> 
+                    </td>
+                </tr>
                 <tr>
                     <td style="width:20%">*你的称呼</td>
                     <td style="width:80%"><input type="text" id="id_name" name="name" placeholder="请输入你的姓名，如王先生" style="width:100%; height:60px" autofocus required  /></td>

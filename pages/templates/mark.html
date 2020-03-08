@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block head %}  
+<br/>
+{% endblock %}
+
+{% block topmenucenter %}
+    <div style="padding:5px">
+        <a id =link href="{% url 'home' %}">首页</a>
+        <a id =link href="{% url 'checkcharge' %}">资费标准</a>
+        <a id =link  href="{% url 'publicneed' %}">发布需求</a> 
+    </div>
+{% endblock %}
+
+{% block contentbody %}
+<div style="width:90%;margin:5% auto">
+        <h4>评分</h4>
+        <form enctype='multipart/form-data' action="{% url 'markteacher' bookcourseflow.id%}" method="post" name='markteacher' >{% csrf_token %}
+            <table align="center" >
+                <tr>
+                    <td align="left">授课老师：{{bookcourseflow.teacher.teacher.name}}</td>
+                </tr>
+               <tr>
+                    <td align="left">评分：
+                        <select id="5"  name="mark" panelHeight="auto" style="height:30px">
+                        <option value=5>5</option>
+                        <option value=4>4</option>
+                        <option value=3>3</option>
+                        <option value=2>2</option>
+                        <option value=1>1</option>
+                        </select> 
+                    </td>
+                <tr>
+                    <td align="left"><input type="submit" value="确认提交" style="width:120px; height:30px" ></td>
+                </tr>
+        </table>     
+    </form>
+</div>
+{% endblock %}

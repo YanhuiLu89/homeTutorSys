@@ -129,10 +129,13 @@ def msgcenter(request):#消息中心
     if cook == None:
         return  render(request, 'index.html')
     user = Users.objects.get(name = cook)
+    notice_list = Notices.objects.all().order_by('-time')
     if user.usertype==0:
         student=StudentInfos.objects.get(student=user)
-        messages=Messages.objects.filter(Q(fromuser=student)&~Q(reply=''))
-        content={'message_list':messages}
+        messages=Messages.objects.filter(fromuser=student)
+        content={'notice_list':notice_list,'message_list':messages}
+        print("+++++++++++++++++++++++++++++++++++++++++=")
+        print( messages.count())
         return render(request, 'msgcenter.html',content)
     if user.usertype==1:
         return render(request, 'msgcenter_t.html')
@@ -658,19 +661,23 @@ def replymsg(request,message_id):#删除或回复留言
         message.save()
     return HttpResponseRedirect(reverse('mgmessage'))
 
-def leavmessage(request):#留言
+def leavmessage(request,teacher_id):#留言
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
+    user = Users.objects.get(name = cook)
+    teacher=Users.objects.get(id=teacher_id)
+    teacherinfo=TeacherInfos.objects.get(teacher=teacher)
     if request.method == 'POST':
         temp_message=request.POST.get('message')
-        user = Users.objects.get(name = cook)
         student=StudentInfos.objects.get(student=user)
-        message=Messages(fromuser=student,text=temp_message,reply='',updatetime=timezone.now())
+        message=Messages(fromuser=student,text=temp_message,reply='',teacher=teacherinfo,updatetime=timezone.now())
         message.save()
         messages.add_message(request,messages.INFO,'留言成功，可在 消息 中查看留言回复')
-    return HttpResponseRedirect(reverse('home'))
+    notice_list = Notices.objects.all().order_by('-time')
+    context = {'notice_list': notice_list,'teacher':teacher}
+    return render(request, 'leavemessage.html',context)
 
 def addnotice(request):#
     print("addnotice in")
@@ -871,10 +878,17 @@ def markteacher(request,bookflow_id):#根据预约上课情况给老师打分
     if cook == None:
         return  render(request, 'index.html')
     user=Users.objects.get(name=cook)
-    bookflow=BookCourseflow.objects.get(id=bookflow_id)
-    bookflow.state=4
-    bookflow.save()
-    return HttpResponseRedirect(reverse('my'))
+    bookcourseflow=BookCourseflow.objects.get(id=bookflow_id)
+    if  request.method == 'POST':
+        temp_mark = request.POST['mark']
+        bookcourseflow.teacher.mark=(bookcourseflow.teacher.mark*bookcourseflow.teacher.marknum+int(temp_mark))/(bookcourseflow.teacher.marknum+1)
+        bookcourseflow.teacher.save()
+        bookcourseflow.teacher.marknum+=1
+        messages.add_message(request,messages.INFO,'评价成功')
+        return HttpResponseRedirect(reverse('my'))
+    notice_list = Notices.objects.all().order_by('-time')
+    context = {'notice_list': notice_list,'bookcourseflow':bookcourseflow}
+    return render(request, 'mark.html',context)
     
 def studentcoursedetail(request,stcourse_id):
     cook = request.COOKIES.get("username")

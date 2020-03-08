@@ -19,6 +19,7 @@ class TeacherInfos(models.Model):#老师信息，与user一对一关系
     teacher = models.OneToOneField(Users, on_delete=models.CASCADE)
     title = models.CharField(max_length=200,default="")
     mark = models.IntegerField(default=0 )#打分0-5
+    marknum = models.IntegerField(default=0 )#被评次数，算评分用
     introduce= models.CharField(max_length=200,default="" )#自我介绍
     fee = models.IntegerField(default=100)#薪水要求每小时
     education= models.CharField(max_length=40,default=u'本科')
@@ -73,7 +74,6 @@ class Courseflow(models.Model):#老师提交课程审批流程
 
 class BookCourseflow(models.Model):#预约老师
     student = models.OneToOneField(StudentInfos, on_delete=models.CASCADE)
-    callname=models.CharField(max_length=20,default='')
     teacher=models.ForeignKey(TeacherInfos, on_delete=models.CASCADE,default=None)
     state = models.IntegerField(default=0)#0-提交预约，1-预约成功 2-已完成 3预约失败,4-已取消
     mail = models.EmailField(default='')

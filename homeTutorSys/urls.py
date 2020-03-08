@@ -57,7 +57,7 @@ urlpatterns = [
     path('definedesign/', views.definedesign, name='definedesign'),
     path('searchdesign/', views.searchdesign, name='searchdesign'),
     path('selecteddesign/<design_idno>', views.selecteddesign, name='selecteddesign'),
-    path('leavmessage/', views.leavmessage, name='leavmessage'),
+    path('leavmessage/<teacher_id>', views.leavmessage, name='leavmessage'),
 
     path('mgmessage/', views.mgmessage, name='mgmessage'),
     path('processmsg/<message_id>', views.processmsg, name='processmsg'),
