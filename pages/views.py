@@ -885,11 +885,13 @@ def processbook(request,bookflow_id,state):
     elif state==1:
         messages.add_message(request,messages.INFO,'已接受预约')
     elif state==2:
-        messages.add_message(request,messages.INFO,'已完成')
+        messages.add_message(request,messages.INFO,'已完成课程')
     elif state==3:
         messages.add_message(request,messages.INFO,'已拒绝预约')
     elif state==4:
         messages.add_message(request,messages.INFO,'已取消预约')
+    elif state==5:
+        messages.add_message(request,messages.INFO,'已评分')
     return HttpResponseRedirect(reverse('my'))
 
 
@@ -903,8 +905,10 @@ def markteacher(request,bookflow_id):#根据预约上课情况给老师打分
     if  request.method == 'POST':
         temp_mark = request.POST['mark']
         bookcourseflow.teacher.mark=(bookcourseflow.teacher.mark*bookcourseflow.teacher.marknum+int(temp_mark))/(bookcourseflow.teacher.marknum+1)
-        bookcourseflow.teacher.save()
+        bookcourseflow.state=5
         bookcourseflow.teacher.marknum+=1
+        bookcourseflow.teacher.save()
+        bookcourseflow.save()
         messages.add_message(request,messages.INFO,'评价成功')
         return HttpResponseRedirect(reverse('my'))
     notice_list = Notices.objects.all().order_by('-time')

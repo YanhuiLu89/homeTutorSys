@@ -17,9 +17,12 @@
     </style>
 </head>
 <body>
-    <div style="margin: 15% 40%;">
+    <div id='content' >
             <h2>爱学习家教中介系统</h2>
             <h2>欢迎登陆</h2>
+            {% for message in messages %}
+                <div class='alert alert-{{message.tags}}' style="color:coral">{{ message }}</div>
+            {% endfor %}
             <form action="{% url 'login' %}" method="post" name='login'>{% csrf_token %}
                <table align="center">
                     <tr>

@@ -17,12 +17,12 @@
     </style>
 </head>
 <body>
-    <div id=content>
+    <div id='content'>
         <h2>爱学习家教中介系统</h2>
         <div>
-                {% for message in messages %}
-                    <div class='alert alert-{{message.tags}}' style="color:coral">{{ message }}</div>
-                {% endfor %}
+            {% for message in messages %}
+                <div class='alert alert-{{message.tags}}' style="color:coral">{{ message }}</div>
+            {% endfor %}
         </div>
         <form action="{% url 'index' %}" method="post" name='index'>{% csrf_token %}
             <table align="center">

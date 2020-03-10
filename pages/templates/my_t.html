@@ -66,20 +66,20 @@
             <h4>被预约</h4>
              <table align="center" style="table-layer:fixed"  border="0" cellpadding="0" cellspacing="0" style="border:1px solid #000000;">
                 <tr align="left">
-                    <td width=10% style="border:1px solid #000000;">提交者</td>
-                    <td width=10% style="border:1px solid #000000;">称呼</td>
+                    <td width=8% style="border:1px solid #000000;">提交者</td>
+                    <td width=8% style="border:1px solid #000000;">称呼</td>
                     <td width=10% style="border:1px solid #000000;">电话</td>
                     <td width=10% style="border:1px solid #000000;">邮箱</td>
                     <td width=20% style="border:1px solid #000000;">授课地址</td>
                     <td width=20% style="border:1px solid #000000;">要求</td>
-                    <td width=5% style="border:1px solid #000000;">状态</td>
+                    <td width=8% style="border:1px solid #000000;">状态</td>
                     <td width=10% style="border:1px solid #000000;">预约时间</td>
-                    <td width=5% style="border:1px solid #000000;">管理</td>
+                    <td width=6% style="border:1px solid #000000;">管理</td>
                 </tr>
                  {% for bookcourseflow in teacherinfo.bookcourseflow_set.all %}
                     <tr align="left">
                         <td style="border:1px solid #000000;">
-                           <a  href="{% url 'studentdetail' bookcourseflow.student.id %}">{{bookcourseflow.student.name}}</a>
+                           <a  href="{% url 'studentdetail' bookcourseflow.student.id %}">{{bookcourseflow.student.student.name}}</a>
                         </td>
                         <td style="border:1px solid #000000;">{{bookcourseflow.callname}}</td>
                         <td style="border:1px solid #000000;">{{bookcourseflow.phone}}</td>
@@ -115,33 +115,29 @@
           var bookstates = document.getElementsByName('bookstate');
             var accepts = document.getElementsByName('accept');
             var denys = document.getElementsByName('deny');
-            alert(00000000000000)
-            alert(bookstates.length)
+            var finishs = document.getElementsByName('finish');
             for( var i=0; i<bookstates.length; i++){
                 var bookstate=bookstates[i];
-                alert('0000000000000000000000000000')
                 if(bookstate.id.indexOf("0")!=-1){
-                    alert('111111111111111')
-                    bookstate.innerText="已提交预约";
+                    bookstate.innerText="待接受";
                     accepts[i].style.visibility="visible"
                     denys[i].style.visibility="visible" 
                 }
-                else if(state.id.indexOf("1")!=-1){
-                    alert('22222222222222')
-                    bookstate.innerText="预约成功";
-                    finish[i].style.visibility="visible" 
+                else if(bookstate.id.indexOf("1")!=-1){
+                    bookstate.innerText="已接受";
+                    finishs[i].style.visibility="visible" 
                 }
-                else if(state.id.indexOf("2")!=-1){
-                    alert('333333333333333')
+                else if(bookstate.id.indexOf("2")!=-1){
                     bookstate.innerText="已完成";
                 }
-                else if(state.id.indexOf("3")!=-1){
-                    alert('44444444444444444')
-                    bookstate.innerText="拒绝预约";
+                else if(bookstate.id.indexOf("3")!=-1){
+                    bookstate.innerText="已拒绝";
                 }
-                else if(state.id.indexOf("4")!=-1){
-                    alert('55555555555')
+                else if(bookstate.id.indexOf("4")!=-1){
                     bookstate.innerText="已取消";
+                }
+                 else if(bookstate.id.indexOf("5")!=-1){
+                    bookstate.innerText="已评分";
                 }
             }
         }

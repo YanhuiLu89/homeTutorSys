@@ -40,15 +40,15 @@
             <h4>我的预约</h4>
             <table align="center" style="table-layer:fixed"  border="0" cellpadding="0" cellspacing="0" style="border:1px solid #000000;">
                 <tr align="left">
-                    <td width=10% style="border:1px solid #000000;">老师</td>
-                    <td width=10% style="border:1px solid #000000;">预约人</td>
+                    <td width=8% style="border:1px solid #000000;">老师</td>
+                    <td width=8% style="border:1px solid #000000;">预约人</td>
                     <td width=10% style="border:1px solid #000000;">电话</td>
                     <td width=10% style="border:1px solid #000000;">邮箱</td>
                     <td width=20% style="border:1px solid #000000;">授课地址</td>
                     <td width=20% style="border:1px solid #000000;">要求</td>
-                    <td width=5% style="border:1px solid #000000;">状态</td>
+                    <td width=8% style="border:1px solid #000000;">状态</td>
                     <td width=10% style="border:1px solid #000000;">预约时间</td>
-                    <td width=5% style="border:1px solid #000000;">管理</td>
+                    <td width=6% style="border:1px solid #000000;">管理</td>
                 </tr>
                  {% for bookcourseflow in bookcourseflow_list.all %}
                     <tr align="left">
@@ -63,7 +63,7 @@
                         <td style="border:1px solid #000000;"><label name="state" id= "state{{bookcourseflow.state}}"><label></td>
                         <td style="border:1px solid #000000;">{{bookcourseflow.updatetime }} </td>
                         <td style="border:1px solid #000000;">
-                            <a  name="cancel" style="visibility:hidden" href="{% url 'processbook' bookcourseflow.id  4%}">取消预约</a> 
+                            <a  name="cancel" style="visibility:hidden" href="{% url 'processbook' bookcourseflow.id  4%}">取消</a> 
                             <a  name="mark" style="visibility:hidden" href="{% url 'markteacher' bookcourseflow.id %}">打分</a> 
                         </td>
                     </tr>
@@ -104,7 +104,7 @@
             for( var i=0; i<states.length; i++){
                 var state=states[i];
                 if(state.id.indexOf("0")!=-1){
-                    state.innerText="已提交预约";
+                    state.innerText="已提交";
                     cancels[i].style.visibility="visible"
                 }
                 else if(state.id.indexOf("1")!=-1){
@@ -120,7 +120,9 @@
                 }
                 else if(state.id.indexOf("4")!=-1){
                     state.innerText="已取消";
-                    marks[i].style.visibility="visible"
+                }
+                else if(state.id.indexOf("5")!=-1){
+                    state.innerText="已评分";
                 }
             }
         }
