@@ -17,8 +17,8 @@
 {% endblock %}
 
 {% block contentbody %}
-    <div  style="width:100%;margin:5% 5% 5% 5%">
-        <div>
+    <div  id="textcontent" style="margin:5% 5% 5% 5%">
+        <div style="width:90%">
             <h3>待审核课程</h3>
             <table align="center" style="table-layer:fixed"  border="0" cellpadding="0" cellspacing="0" style="border:1px solid #000000;">
                 <tr align="left">
@@ -39,8 +39,8 @@
                             <a  href="{% url 'teacherdetail' courseflow.teacher.id %}">{{courseflow.teacher.name}}</a>
                         </td>
                         <td style="border:1px solid #000000;">
-                            <input type="submit" value="通过"  style="width:200px; height:32px;float:center" name="pass">
-                            <input type="submit" value="打回"  style="width:200px; height:32px;float:center" name="back">
+                            <a href="{% url 'processcourseflow' courseflow.id 1 %}">通过</a>
+                            <a href="{% url 'processcourseflow' courseflow.id 2 %}">打回</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -62,7 +62,7 @@
                         <td style="border:1px solid #000000;">{{courseflow.course.subject}}</td>
                         <td style="border:1px solid #000000;">{{courseflow.course.introduce}}</td>
                         <td style="border:1px solid #000000;">
-                            <a  href="{% url 'teacherdetail' courseflow.teacher.id %}">{{courseflow.teacher.name}}</a>
+                            <a  href="{% url 'teacherdetail' courseflow.teacher.id %}">{{courseflow.teacher.teacher.name}}</a>
                         </td>
                         <td style="border:1px solid #000000;">已通过</td>
                     </tr>
@@ -78,14 +78,14 @@
                     <td width=20% style="border:1px solid #000000;">提交老师</td>
                     <td width=10% style="border:1px solid #000000;">状态</td>
                 </tr>
-                    {% for courseflow in courseflow_list2.all %}
+                    {% for courseflow in courseflow_list3.all %}
                     <tr align="left">
                         <td style="border:1px solid #000000;">{{courseflow.course.name}}</td>
                         <td style="border:1px solid #000000;">{{courseflow.course.grade}}</td>
                         <td style="border:1px solid #000000;">{{courseflow.course.subject}}</td>
                         <td style="border:1px solid #000000;">{{courseflow.course.introduce}}</td>
                         <td style="border:1px solid #000000;">
-                            <a  href="{% url 'teacherdetail' courseflow.teacher.id %}">{{courseflow.teacher.name}}</a>
+                            <a  href="{% url 'teacherdetail' courseflow.teacher.id %}">{{courseflow.teacher.teacher.name}}</a>
                         </td>
                         <td style="border:1px solid #000000;">已打回</td>
                     </tr>

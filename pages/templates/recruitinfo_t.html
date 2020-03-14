@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block head %}  
+<br/>
+{% endblock %}
+
+{% block style %}
+<style>
+    #pcontent{
+        font-size:28px;
+        color:black;
+    }
+</style>
+{% endblock %}
+
+{% block topmenucenter %}
+    <div style="padding:20px">
+        <a id =link href="{% url 'home' %}">首页</a>
+        <a id =link href="{% url 'mgmessage' %}">留言管理</a>
+        <a id =link href="{% url 'mgcourse' %}">课程管理</a>
+        <a id =selectedlink href="{% url 'recruitinfo' %}">招聘信息</a>
+    </div>
+{% endblock %}
+
+{% block contentbody %}
+ <div id="textcontent" style="margin: 5% 5% 5% 5%">
+        <div  style="width:90%">
+            <h3>招聘信息</h3>
+            {% for recruit in recruit_list.all %}
+                <h4>{{ recruit.name }}<h4>
+                <p align="left" style="width: 100%;font-size:26px;font-weight: normal">
+                    年龄：{{recruit.minage}}周岁~{{recruit.maxage}}周岁&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp工资：{{recruit.wage}}元/小时
+                    </br>
+                    学历要求：{{recruit.education}}及以上
+                    </br>
+                    邮箱：{{recruit.email}}
+                    </br>
+                    电话：{{recruit.phone}}
+                    </br>
+                    职位介绍：{{ recruit.description }}
+                     </br>
+                    <label style="font-size:18px;float:right">{{ recruit.updatetime }} <label>
+                </p>
+                </br>
+            {% endfor %}
+        </div>
+      
+</div>
+{% endblock %}

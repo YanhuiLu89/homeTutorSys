@@ -26,8 +26,8 @@
 {% endblock %}
 
 {% block contentbody %}
- <div style="margin: 5% 5% 5% 5%">
-        <div style="width:80%">
+  <div id="textcontent" style="margin: 5% 5% 5% 5%">
+        <div  style="width:90%">
             <h4>发布招聘</h4>
             <form enctype='multipart/form-data' action="{% url 'addrecruit' %}" method="post" name='addrecruit' >{% csrf_token %}
                 <table>
@@ -87,11 +87,11 @@
                 </table>
             </form>
         </div>
-        <div  style="width:80%">
+        <div  style="width:90%">
             <h3>历史招聘</h3>
             {% for recruit in recruit_list.all %}
                 <h4>{{ recruit.name }}<h4>
-                <p align="left" style="width: 80%;font-size:26px;font-weight: normal">
+                <p align="left" style="width: 100%;font-size:26px;font-weight: normal">
                     年龄：{{recruit.minage}}周岁~{{recruit.maxage}}周岁&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp工资：{{recruit.wage}}元/小时
                     </br>
                     学历要求：{{recruit.education}}及以上
@@ -101,9 +101,10 @@
                     电话：{{recruit.phone}}
                     </br>
                     职位介绍：{{ recruit.description }}
-                     </br>
-                    {{ recruit.updatetime }}
+                      </br>
+                    <label style="font-size:18px;float:right">{{ recruit.updatetime }} <label>
                 </p>
+                </br>
             {% endfor %}
         </div>
       

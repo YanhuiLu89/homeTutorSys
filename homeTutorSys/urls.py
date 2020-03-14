@@ -32,9 +32,11 @@ urlpatterns = [
 
     path('reviewcourse/', views.reviewcourse, name='reviewcourse'),
     path('reviewclick/<workflow_id>', views.reviewclick, name='reviewclick'),
+    path('processcourseflow/<courseflow_id><state>', views.processcourseflow, name='processcourseflow'),
     path('mgcourse/', views.mgcourse, name='mgcourse'),
     path('mgcharge/', views.mgcharge, name='mgcharge'),
     path('mgrecruit/', views.mgrecruit, name='mgrecruit'),
+    path('recruitinfo/', views.recruitinfo, name='recruitinfo'),
     path('addrecruit/', views.addrecruit, name='addrecruit'),
     path('addcourse/', views.addcourse, name='addcourse'),
     path('delcourse/<course_id>', views.delcourse, name='delcourse'),

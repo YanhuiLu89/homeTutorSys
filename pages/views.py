@@ -366,6 +366,17 @@ def addrecruit(request):#
         recruit.save()
         messages.add_message(request,messages.INFO,'招聘信息已发布')
     return HttpResponseRedirect(reverse('mgrecruit'))
+
+def recruitinfo(request):#
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    user = Users.objects.get(name = cook)
+    recruit_list=Recruit.objects.all().order_by('-updatetime')
+    notice_list = Notices.objects.all().order_by('-time')
+    context = {'recruit_list': recruit_list,'notice_list': notice_list}
+    return render(request, 'recruitinfo_t.html',context)
     
 def addcourse(request):#添加课题
     cook = request.COOKIES.get("username")
@@ -444,6 +455,22 @@ def reviewcourse(request):#管理员审核老师提交的课程
     courseflow_list3=Courseflow.objects.filter(state=2)
     context = {'courseflow_list1':courseflow_list1,'courseflow_list2':courseflow_list2,'courseflow_list3':courseflow_list3,'notice_list': notice_list}
     return render(request, 'reviewcourse_a.html',context)
+
+def processcourseflow(request,courseflow_id,state):#管理员审核老师提交的课程
+    cook = request.COOKIES.get("username")
+    print('cook:', cook)
+    if cook == None:
+        return  render(request, 'index.html')
+    courseflow=Courseflow.objects.get(id=courseflow_id)
+    courseflow.state=state
+    courseflow.save()
+    if courseflow.state==1:
+        messages.add_message(request,messages.INFO,'已提交')
+    elif courseflow.state==1:
+        messages.add_message(request,messages.INFO,'已通过')
+    elif courseflow.state==2:
+        messages.add_message(request,messages.INFO,'已打回')
+    return HttpResponseRedirect(reverse('reviewcourse'))
 
 def reviewclick(request,workflow_id):
     cook = request.COOKIES.get("username")#审核课题
