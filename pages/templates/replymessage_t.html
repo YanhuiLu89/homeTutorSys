@@ -16,26 +16,23 @@
 {% block topmenucenter %}
     <div style="padding:20px">
         <a id =link href="{% url 'home' %}">首页</a>
-        <a id =link href="{% url 'reviewcourse' %}">选题审核</a>
-        <a id =link  href="{% url 'mgcourse' %}">选题统计</a> 
-        <a id =link  href="{% url 'mgstudent' %}">学生管理</a> 
-        <a id =link  href="{% url 'mgteacher' %}">老师管理</a> 
-        <a id =selectedlink  href="{% url 'mgmessage' %}">留言管理</a> 
+        <a id =link href="{% url 'mgcourse' %}">课程管理</a>
+        <a id =link href="{% url 'recruitinfo' %}">招聘信息</a>
     </div>
 {% endblock %}
 
 {% block contentbody %}
-<div style="margin: 5% 20%" >
+<div id="textcontent" style="margin: 5% 5% 5% 5%;width:90%" >
     <h4>回复留言</h4>
-    <p align="left">
+    <p align="left" style="width:90%">
         <tr>
-            <td>来自:{{ message.fromuser.student_name}}</td>
+            <td>来自:{{ message.fromuser.student.name}}</td>
         </tr>
     </p>
     <p align="left"><lable>留言:</label> {{ message.text}}</p>
     <p>
         <form enctype='multipart/form-data' action="{% url 'replymsg' message.id %}" method="post" name='replymsg' >{% csrf_token %}
-            <textarea id="id_introduce" placeholder="请输入回复内容" name="replycontent" style="width:100%; height:100px" autofocus required></textarea>
+            <textarea id="id_introduce" placeholder="请输入回复内容" name="replycontent" style="width:90%; height:100px" autofocus required></textarea>
             <input type="submit" name='replymsg' value="确认回复" style="width:80px; height:35px;float:center">
         </form>
     </p>

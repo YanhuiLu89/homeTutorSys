@@ -62,7 +62,7 @@ urlpatterns = [
     path('leavmessage/<teacher_id>', views.leavmessage, name='leavmessage'),
 
     path('mgmessage/', views.mgmessage, name='mgmessage'),
-    path('processmsg/<message_id>', views.processmsg, name='processmsg'),
+    path('delmsg/<message_id>', views.delmsg, name='delmsg'),
     path('replymsg/<message_id>', views.replymsg, name='replymsg'),
 
     path('checkcharge/', views.checkcharge, name='checkcharge'),

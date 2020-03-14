@@ -123,7 +123,7 @@ def designdetail(request,subject):
     elif user.usertype==1:
         return render(request, 'designdetail_a.html',context)
 
-def msgcenter(request):#消息中心
+def msgcenter(request):#留言中心
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
@@ -132,16 +132,19 @@ def msgcenter(request):#消息中心
     notice_list = Notices.objects.all().order_by('-time')
     if user.usertype==0:
         student=StudentInfos.objects.get(student=user)
-        messages=Messages.objects.filter(fromuser=student)
-        content={'notice_list':notice_list,'message_list':messages}
-        print("+++++++++++++++++++++++++++++++++++++++++=")
-        print( messages.count())
+        messages1=Messages.objects.filter(Q(fromuser=student)&Q(Q(reply=None)|Q(reply=""))).order_by('-updatetime')
+        messages2=Messages.objects.filter(Q(fromuser=student)&(~Q(reply=None))&(~Q(reply=''))).order_by('-updatetime')
+        content={'notice_list':notice_list,'message1_list':messages1,'message2_list':messages2}
         return render(request, 'msgcenter.html',content)
-    if user.usertype==1:
-        return render(request, 'msgcenter_t.html')
-    if user.usertype==2:
-        messages=Messages.objects.all()
-        content={'message_list':messages}
+    elif user.usertype==1:
+        teacher=TeacherInfos.objects.get(teacher=user)
+        messages1=Messages.objects.filter(Q(teacher=teacher)&Q(Q(reply=None)|Q(reply=""))).order_by('-updatetime')
+        messages2=Messages.objects.filter(Q(teacher=teacher)&(~Q(reply=None))&(~Q(reply=''))).order_by('-updatetime')
+        content={'notice_list':notice_list,'message1_list':messages1,'message2_list':messages2}
+        return render(request, 'msgcenter_t.html',content)
+    elif user.usertype==2:
+        messages=Messages.objects.all().order_by('-updatetime')
+        content={'notice_list':notice_list,'message_list':messages}
         return render(request, 'msgcenter_a.html',content)
 
 def editmyinfo(request):#我的
@@ -657,35 +660,40 @@ def mgmessage(request):#留言管理
         return render(request, 'studentcoursedetail_a.html',context)
     return render(request, 'mgmessage.html',context)
 
-def processmsg(request,message_id):#删除或回复留言
+def delmsg(request,message_id):#删除或回复留言
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
     temp_id=message_id
-    if request.method == 'POST':
-        if 'delmsg' in request.POST:
-            Messages.objects.filter(id= temp_id).delete()#删除留言
-            return HttpResponseRedirect(reverse('mgmessage'))
-        elif 'replymsg' in request.POST:#回复留言
-            message=Messages.objects.get(id=temp_id)
-            context={'message':message}
-            return render(request, 'replymessage.html',context)
-    return HttpResponseRedirect(reverse('mgmessage'))
+    Messages.objects.filter(id= temp_id).delete()#删除留言
+    messages.add_message(request,messages.INFO,'已删除')
+    return HttpResponseRedirect(reverse('msgcenter'))
 
 def replymsg(request,message_id):#删除或回复留言
     cook = request.COOKIES.get("username")
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
+    user = Users.objects.get(name = cook)
     temp_id=message_id
+    message=Messages.objects.get(id=temp_id)
+    notice_list = Notices.objects.all().order_by('-time')
     if request.method == 'POST':
         temp_reply_content=request.POST.get('replycontent')
-        message=Messages.objects.get(id=temp_id)
         message.reply=temp_reply_content
         message.updatetime=timezone.now()
         message.save()
-    return HttpResponseRedirect(reverse('mgmessage'))
+        if user.usertype==1:
+            return HttpResponseRedirect(reverse('msgcenter'))
+        elif user.usertype==2:
+           return HttpResponseRedirect(reverse('mgmessage'))
+    else:
+        context = {'message':message,'notice_list':notice_list}
+        if user.usertype==1:
+            return render(request, 'replymessage_t.html',context)
+        elif user.usertype==2:
+            return render(request, 'replymessage_a.html',context)
 
 def leavmessage(request,teacher_id):#留言
     cook = request.COOKIES.get("username")

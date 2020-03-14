@@ -18,19 +18,32 @@
         <a id =link href="{% url 'home' %}">首页</a>
         <a id =link href="{% url 'checkcharge' %}">资费标准</a>
         <a id =link  href="{% url 'publicneed' %}">发布需求</a> 
+        <a id =link  href="{% url 'msgcenter' %}">留言中心</a> 
     </div>
 {% endblock %}
 
 {% block contentbody %}
 <div id="textcontent" style="margin: 5% 5% 5% 5%;width:80%" >
-    <h4>消息中心</h4>
-    {% for message in message_list.all %}
+    <h3>留言中心</h3>
+     <h4>未回复留言</h4>
+    {% for message in message1_list.all %}
         <p align="left">
-            <lable>留言:</label> {{ message.text}}
+            <lable>{{message.fromuser.student.name}}:</label> {{ message.text}}
             </br>
-            <lable>回复内容:</label> {{ message.reply}}
+            <lable>回复:</label> {{ message.reply}}
+            </br>
+             <lable style="font-size:15px">更新时间: {{ message.updatetime}}</label>
+             </br>
+        </p>
+    {% endfor %}
+    <h4>已回复留言</h4>
+    {% for message in message2_list.all %}
+        <p align="left">
+            <lable>{{message.fromuser.student.name}}:</label> {{ message.text}}
+            </br>
+            <lable>回复:</label> {{ message.reply}}
             <br>
-            <lable>时间:</label> {{ message.updatetime}}
+            <lable style="font-size:15px">更新时间: {{ message.updatetime}}</label>
         </p>
     {% endfor %}
 </div>

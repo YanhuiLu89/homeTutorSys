@@ -16,13 +16,35 @@
 {% block topmenucenter %}
     <div style="padding:20px">
         <a id =link href="{% url 'home' %}">首页</a>
-        <a id =link href="{% url 'reviewcourse' %}">选题审核</a>
-        <a id =link href="{% url 'mgcourse' %}">选题管理</a>
+        <a id =link href="{% url 'mgmessage' %}">留言管理</a>
+        <a id =link href="{% url 'mgcourse' %}">课程管理</a>
+        <a id =link href="{% url 'recruitinfo' %}">招聘信息</a>
     </div>
 {% endblock %}
 
 {% block contentbody %}
-<div style="margin: 5% 20%" >
-    <h4>消息中心</h4>
+<div id="textcontent" style="margin: 5% 5% 5% 5%;width:80%" >
+    <h3>消息中心</h3>
+    <h4>待回复留言</h4>
+    {% for message in message1_list.all %}
+        <p align="left">
+            <lable>{{message.fromuser.student.name}}:</label> {{ message.text}}
+            </br>
+             <lable style="font-size:15px">更新时间: {{ message.updatetime}}</label>
+             </br>
+            <a id="textcontent" href="{% url 'replymsg' message.id %}">回复</a>
+        </p>
+    {% endfor %}
+    <h4>已回复留言</h4>
+    {% for message in message2_list.all %}
+        <p align="left">
+            <lable>{{message.fromuser.student.name}}:</label> {{ message.text}}
+            </br>
+            <lable>回复:</label> {{ message.reply}}
+            <br>
+            <lable style="font-size:15px">更新时间: {{ message.updatetime}}</label>
+        </p>
+    {% endfor %}
+
 </div>
 {% endblock %}

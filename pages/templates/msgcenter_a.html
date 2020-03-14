@@ -26,14 +26,17 @@
 
 {% block contentbody %}
 <div style="margin: 5% 20%" >
-        <h4>消息中心</h4>
-        {% for message in message_list.all %}
-        <p align="left">
-            <tr>
-                <td>{{ message.updatetime}}&nbsp&nbsp{{message.fromuser.student_name}}给你留言:</td>
-            </tr>
+    <h4>留言中心</h4>
+    {% for message in message_list.all %}
+        <p align='left'>
+            {{message.fromuser.student.name}}:{{ message.text}}
+            </br>
+            {{message.teacher.teacher.name}}:{{ message.reply}}
+            </br>
+            <lable style="font-size:15px;float:right">更新时间: {{ message.updatetime}}</label>
+            <a id="textcontent" href="{% url 'delmsg' message.id %}">删除</a>
         </p>
-        <p align="left">{{ message.text}}</p>
-        {% endfor %}
+        </br>
+    {% endfor %}
 </div>
 {% endblock %}
