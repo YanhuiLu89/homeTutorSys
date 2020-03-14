@@ -5,15 +5,16 @@
 {% endblock %}
 
 {% block topmenucenter %}
-    <div style="padding:20px">
+    <div style="padding:10px">
         <a id =link href="{% url 'home' %}">首页</a>
         <a id =link href="{% url 'mgcourse' %}">课程管理</a>
-        <a id =link href="{% url 'mgcourse' %}">课程管理</a>
+        <a id =link href="{% url 'recruitinfo' %}">招聘信息</a>
+        <a id =link  href="{% url 'msgcenter' %}">留言中心</a>  
     </div>
 {% endblock %}
 
 {% block contentbody %}
-    <div style="margin: 5% 5% 5% 5%">
+    <div id="textcontent" style="margin: 5% 5% 5% 5%;width:80%" >
         <div style="width:90%">
             <h4>编辑个人信息</h4>
             <form enctype='multipart/form-data' action="{% url 'editmyinfo' %}" method="post" name='editmyinfo' >{% csrf_token %}
@@ -30,8 +31,8 @@
                     <td>姓名:<input type="text"  name="fullname" value="{{ teacherinfo.teacher.fullname }}" style="width:50%;height:32px"/></td>
                     <td>性别:
                         <select id="gender"  name="gender" panelHeight="auto" style="width: 50%;height:30px">
-                            <option value=男 >女</option>
-                            <option value=女二>女</option>
+                            <option value=男>男 </option>
+                            <option value=女>女</option>
                         </select> 
                     </td>
                 </tr>
@@ -53,8 +54,11 @@
                 </table>
                 <table  style="margin:0% 0% 0% 0%;width:100%;" vertical-align=left>
                     <tr align="left">
-                        <td>地址:<textarea id="id_address"  name="address" style="width:90%; height:90px">{{teacherinfo.teacher.address }}</textarea></td>
+                        <td>地址:<textarea id="id_address"  name="address" style="width:80%; height:90px">{{teacherinfo.teacher.address }}</textarea></td>
                     </tr>  
+                     <tr align="left">
+                        <td>简介:<textarea id="id_introduce"  name="introduce" style="width:80%; height:90px">{{teacherinfo.introduce }}</textarea></td>
+                    </tr> 
                     <tr>
                      <td><input type="submit" value="更新" name="updatemyinfo" style="width:120px; height:30px;float:center" ></td>
                     </tr>

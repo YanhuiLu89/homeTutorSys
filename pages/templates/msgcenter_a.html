@@ -14,20 +14,21 @@
 {% endblock %}
 
 {% block topmenucenter %}
-    <div style="padding:20px">
+    <div style="padding:10px">
         <a id =link href="{% url 'home' %}">首页</a>
-        <a id =link href="{% url 'reviewcourse' %}">选题审核</a>
-        <a id =link  href="{% url 'mgcourse' %}">选题统计</a> 
+        <a id =link  href="{% url 'mgcourse' %}">课程管理</a> 
         <a id =link  href="{% url 'mgstudent' %}">学生管理</a> 
         <a id =link  href="{% url 'mgteacher' %}">老师管理</a> 
-        <a id =link  href="{% url 'mgmessage' %}">留言管理</a> 
+        <a id =link  href="{% url 'mgcharge' %}">资费管理</a>
+        <a id =link  href="{% url 'mgrecruit' %}">招聘管理</a> 
+        <a id =selectedlink  href="{% url 'msgcenter' %}">留言中心</a> 
     </div>
 {% endblock %}
 
 {% block contentbody %}
-<div style="margin: 5% 20%" >
+<div id="textcontent" style="margin: 5% 5% 5% 5%;width:80%" >
     <h4>留言中心</h4>
-    {% for message in message_list.all %}
+    {% for message in message_list %}
         <p align='left'>
             {{message.fromuser.student.name}}:{{ message.text}}
             </br>

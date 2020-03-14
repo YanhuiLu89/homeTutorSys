@@ -18,7 +18,7 @@
 </head>
 <body>
     <div style="width:80%;margin:5%;align:left;font-size:20px; auto">
-        <h4>老师信息</h4>
+        <h4>学生信息</h4>
         <table >
             <tr align="left">
                 <td width="50%">账户名:{{ studentinfo.student.name }}</td>
@@ -33,19 +33,21 @@
                 <td width="50%">性别:{{ studentinfo.student.gender }}</td>
             </tr>
         </table>
-        <p align="left">
-            历史预约：
-            {% for bookcourseflow in studentinfo.bookcourseflow_set.all %}
-                <a  href="{% url 'teacherdetail' bookcourseflow.teacher.teacher.id %}">&nbsp&nbsp{{ bookcourseflow.teacher.teacher.name}}</a>
-           {% endfor %}
-           </br>
-            他的需求：
-            {% for studentcourse in studentinfo.studentcourses_set.all %}
-                <a  href="{% url 'studentcoursedetail' studentcourse.id %}" >&nbsp&nbsp{{ studentcourse.name}}</a>
-            {% endfor %}
-            </br>
-            地址:{{ studentinfo.student.address }}
-        </p>
+            <p align="left">
+                历史预约：
+                {% for bookcourseflow in studentinfo.bookcourseflow_set.all %}
+                    <a  href="{% url 'teacherdetail' bookcourseflow.teacher.id %}">&nbsp&nbsp{{ bookcourseflow.teacher.teacher.name}}</a>
+                {% endfor %}
+            </p>
+            <p align="left">
+                他的需求：
+                {% for studentcourse in studentinfo.studentcourses_set.all %}
+                    <a  href="{% url 'studentcoursedetail' studentcourse.id %}" >&nbsp&nbsp{{ studentcourse.name}}</a>
+                {% endfor %}
+            </p>
+            <p align="left">
+                地址:{{ studentinfo.student.address }}
+            </p >
     </div>
 </body>
 </html>

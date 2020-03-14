@@ -5,10 +5,11 @@
 {% endblock %}
 
 {% block topmenucenter %}
-    <div style="padding:20px">
+    <div style="padding:10px">
         <a id =link href="{% url 'home' %}">首页</a>
         <a id =link href="{% url 'checkcharge' %}">资费标准</a>
-        <a id =link  href="{% url 'publicneed' %}">发布需求</a> 
+        <a id =link  href="{% url 'publicneed' %}">发布需求</a>
+        <a id =link  href="{% url 'msgcenter' %}">留言中心</a>  
     </div>
 {% endblock %}
 
@@ -20,7 +21,7 @@
             <table style="margin:0% 0% 0% 0%;width:100%;" vertical-align=left>
                 <tr align="left">
                     <td >邮箱:{{ studentinfo.student.email }}</td>
-                    <td></td>
+                    <td>用户类型:学生</td>
                 </tr>
                 <tr align="left">
                     <td>用户名:<input type="text" id="id_name" name="name" value="{{ studentinfo.student.name}}" style="width:50%;height:32px"/></td>
@@ -30,8 +31,8 @@
                     <td>姓名:<input type="text"  name="fullname" value="{{ studentinfo.student.fullname }}" style="width:50%;height:32px"/></td>
                     <td>性别：
                         <select id="gender"  name="gender" panelHeight="auto" style="width: 50%;height:30px">
-                            <option value=男 >女</option>
-                            <option value=女二>女</option>
+                            <option value=男>男</option>
+                            <option value=女>女</option>
                         </select> 
                     </td>
                 </tr>
@@ -55,7 +56,7 @@
                 </table>
                 <table  style="margin:0% 0% 0% 0%;width:100%;" vertical-align=left>
                     <tr align="left">
-                        <td>地址:<textarea id="id_address"  name="address" style="width:90%; height:90px">{{teacherinfo.teacher.address }}</textarea></td>
+                        <td>地址:<textarea id="id_address"  name="address" style="width:90%; height:90px">{{studentinfo.student.address }}</textarea></td>
                     </tr>  
                     <tr>
                      <td><input type="submit" value="更新" name="updatemyinfo" style="width:120px; height:30px;float:center" ></td>
