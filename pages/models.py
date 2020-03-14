@@ -24,6 +24,9 @@ class TeacherInfos(models.Model):#老师信息，与user一对一关系
     fee = models.IntegerField(default=100)#薪水要求每小时
     education= models.CharField(max_length=40,default=u'本科')
 
+class OrderType(models.Model):#对老师排序
+    type=models.IntegerField(default=0 )#0-按入驻时间排序，1-按评分排序，2-按费用排序
+
 class TeacherCourse(models.Model):#开售的课程
     name=models.CharField(max_length=50)#课程名称
     teacher = models.ManyToManyField(TeacherInfos)#有哪些老师可以上这个课

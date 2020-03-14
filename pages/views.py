@@ -6,7 +6,12 @@ from django.contrib import messages
 from django.db.models import Q 
 from django.utils import timezone
 
-from .models import Users,TeacherInfos,StudentInfos,Notices,Messages,TeacherCourse,StudentCourses,Courseflow,BookCourseflow,Charge,Recruit
+from .models import Users,TeacherInfos,StudentInfos,Notices,Messages,TeacherCourse,\
+    StudentCourses,Courseflow,BookCourseflow,Charge,Recruit,OrderType
+
+if OrderType.objects.all().count()==0:
+    order=OrderType(type=0)
+    order.save()
 # Create your views here.
 ###############################公共view##################################################
 def index(request):#入口页
@@ -51,7 +56,13 @@ def login(request):#入口页
                 request.session["username"] = user.name
                 notice_list = Notices.objects.all().order_by('-time')
                 if user.usertype==0:
-                    teacherinfo_list = TeacherInfos.objects.all().order_by('-mark')
+                    order=OrderType.objects.get(id=1)
+                    if order.type==0:
+                        teacherinfo_list = TeacherInfos.objects.all()
+                    elif order.type==1:
+                        teacherinfo_list = TeacherInfos.objects.all().order_by('-mark')
+                    elif order.type==2:
+                        teacherinfo_list = TeacherInfos.objects.all().order_by('fee')
                     context = {'teacherinfo_list': teacherinfo_list,'notice_list': notice_list}
                     response=render(request, 'homepage.html',context)
                 elif user.usertype==1:
@@ -606,9 +617,29 @@ def mgteacher(request):#
     print('cook:', cook)
     if cook == None:
         return  render(request, 'index.html')
-    teacherinfo_list = TeacherInfos.objects.all()
+    order=OrderType.objects.get(id=1)
+    if request.method == 'POST':
+        if 'order_mark' in request.POST:
+            print( 'order_mark in request.POST:')
+            order.type=1
+        elif 'order_fee' in request.POST:
+            print( 'order_fee in request.POST:')
+            order.type=2
+        elif 'order_time' in request.POST:
+            print( 'order_time in request.POST:')
+            order.type=0
+        order.save()
+    if order.type==0:
+        print( 'order.type==0')
+        teacherinfo_list = TeacherInfos.objects.all()
+    elif order.type==1:
+        print( 'order.type==1')
+        teacherinfo_list = TeacherInfos.objects.all().order_by('-mark')
+    elif order.type==2:
+        print( 'order.type==2')
+        teacherinfo_list = TeacherInfos.objects.all().order_by('fee')
     notice_list = Notices.objects.all().order_by('-time')
-    context = {'notice_list': notice_list,'teacherinfo_list': teacherinfo_list}
+    context = {'notice_list': notice_list,'teacherinfo_list': teacherinfo_list,'order_type':order.type}
     return render(request, 'mgteacher.html',context)
 
 def addteacher(request):#

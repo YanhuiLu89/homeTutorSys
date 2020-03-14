@@ -26,6 +26,12 @@
     <div style="margin: 5% 5% 5% 5%">
         <div style="width:90%;font-size:16px">
             <form action="{% url 'mgteacher' %}" method="post" name='mgteacher'>{% csrf_token %}
+                 <input type="submit" id='order_mark_id' name='order_mark' value="按评分排序" style="height:35px;float:center">
+                 <input type="submit" id='order_time_id' name='order_time' value="按授入驻时间排序" style="height:35px;float:center">
+                 <input type="submit" id='order_fee_id' name='order_fee' value="按费用排序" style="height:35px;float:center">
+                 <label style="visibility:hidden" id='ordertype' >{{order_type}}</label>
+                 </br>
+                 </br>
                  <table align="center" style="table-layer:fixed"  border="0" cellpadding="0" cellspacing="0" style="border:1px solid #000000;">
                     <tr align="left">
                         <td width=8% style="border:1px solid #000000;">账户</td>
@@ -61,4 +67,21 @@
             </form>
         </div>
 	</div>
+<script>
+    window.onload=function(){
+        var ordeytype = document.getElementById('ordertype');
+        var value=ordeytype.innerHTML;
+        if(value==0){
+            var ordertime = document.getElementById('order_time_id');
+            ordertime.style.color='blue'
+        }else if(value==1){
+            var ordermark = document.getElementById('order_mark_id');
+            ordermark.style.color='blue'
+        }else if(value==2){
+            var orderfee = document.getElementById('order_fee_id');
+            orderfee.style.color='blue'
+        }
+        
+    }
+</script>
 {% endblock %}
